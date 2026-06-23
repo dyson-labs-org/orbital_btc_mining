@@ -20,3 +20,6 @@
 - Add the I1C `scenario-suite.v1` contract, deterministic suite runner, suite
   fixtures, CLI run-suite command, canonical verification checks, and Cycle 3
   preregistration.
+- Record harness evaluation cycle 3 as `fail`: the I1C product vessel passed
+  local verification, while harness remediation gates for path hygiene and
+  required review-bundle supplement omission remained open.

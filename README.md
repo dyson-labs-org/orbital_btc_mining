@@ -20,7 +20,9 @@ behavior, hardware control, or mission authority.
 - Product implementation: skeleton.
 - Harness evaluation cycle 1: `pass_with_findings`, merged.
 - Harness evaluation cycle 2: `pass_with_findings`, merged.
-- Harness evaluation cycle 3: preregistered, product implementation in progress.
+- Harness evaluation cycle 3: `fail`; product vessel verification passed, but
+  harness remediation gates for path hygiene and required supplement omission
+  failed.
 - Resource-scenario contract: implemented for deterministic input validation.
 - Resource-transition engine: implemented for deterministic local resource accounting.
 - Scenario-suite runner: implemented for deterministic regression orchestration.

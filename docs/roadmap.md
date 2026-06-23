@@ -89,11 +89,12 @@ workloads, AI workloads, profitability, optimization, telemetry, orbital
 propagation, wallet behavior, network behavior, provider behavior, hardware
 control, or mission authority.
 
-Exit gate: local verification and harness evidence show deterministic suite
-execution, expected constraint outcomes, expectation-mismatch failures,
-integrity validation, relocation, tamper and missing-artifact detection,
-target-mutation detection, review-bundle validation, and stale-binding checks
-without dependencies, provider, adapter, KB, or network requirement.
+Current gate evidence: local product verification shows deterministic suite
+execution, expected constraint outcomes, expectation-mismatch failures, and
+capability honesty without dependencies, provider, adapter, KB, or network
+requirement. Harness Cycle 3 evaluation failed because raw path text persisted
+in red-phase evidence and omitted required supplement entries were not detected.
+I1C remains pending review and merge; full I1 remains incomplete.
 
 ## I2 - Workload/Scheduler
 
