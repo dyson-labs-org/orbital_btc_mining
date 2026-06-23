@@ -1,0 +1,16 @@
+{
+  "schema_version": "scenario-suite.v1",
+  "suite_id": "duplicate-case-id",
+  "cases": [
+    {
+      "case_id": "duplicate",
+      "scenario_path": "fixtures/runs/nominal-resource-run.v1.json",
+      "expected_outcome": "completed"
+    },
+    {
+      "case_id": "duplicate",
+      "scenario_path": "fixtures/runs/curtailed-solar.v1.json",
+      "expected_outcome": "completed"
+    }
+  ]
+}

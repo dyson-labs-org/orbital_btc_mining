@@ -1,0 +1,11 @@
+{
+  "schema_version": "scenario-suite.v1",
+  "suite_id": "fixture-root-escape",
+  "cases": [
+    {
+      "case_id": "escape",
+      "scenario_path": "fixtures/scenarios/minimal-sunlit.v1.json",
+      "expected_outcome": "completed"
+    }
+  ]
+}

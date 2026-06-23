@@ -3,23 +3,29 @@
 Orbital Compute Lab is an incubation repository for offline, deterministic
 study of constrained orbital resource allocation concepts.
 
-Status: incubation skeleton with deterministic resource-scenario validation and resource transitions.
+Status: incubation skeleton with deterministic resource-scenario validation,
+resource transitions, and scenario-suite regression orchestration.
 
 The active product tree contains only dependency-free Node.js product metadata,
 an honest status CLI, a resource-scenario contract validator, a deterministic
-resource-transition engine, tests, and documentation. It does not implement a
+resource-transition engine, a scenario-suite runner, tests, and documentation.
+It does not implement a
 simulation kernel, scheduler, Bitcoin
 workload, AI workload, wallet, trading behavior, hosted AI behavior, network
 behavior, hardware control, or mission authority.
 
 ## Current Status
 
-- Incubation stage: I1B Deterministic Resource Transitions.
+- Incubation stage: I1C Deterministic Scenario Suites.
 - Product implementation: skeleton.
 - Harness evaluation cycle 1: `pass_with_findings`, merged.
-- Harness evaluation cycle 2: product-head `pass_with_findings`, final PR validation pending.
+- Harness evaluation cycle 2: `pass_with_findings`, merged.
+- Harness evaluation cycle 3: `fail`; product vessel verification passed, but
+  harness remediation gates for path hygiene and required supplement omission
+  failed.
 - Resource-scenario contract: implemented for deterministic input validation.
 - Resource-transition engine: implemented for deterministic local resource accounting.
+- Scenario-suite runner: implemented for deterministic regression orchestration.
 - Legacy source: removed from active main and preserved on
   `legacy/pre-orbital-compute-lab`.
 - Preserved legacy SHA: `c93c7366edcd86b83896c3c39b753805183c3126`.
@@ -36,11 +42,14 @@ node src/cli.mjs validate-scenario fixtures/scenarios/minimal-sunlit.v1.json
 node src/cli.mjs validate-scenario fixtures/scenarios/minimal-sunlit.v1.json --json
 node src/cli.mjs run-scenario fixtures/runs/nominal-resource-run.v1.json
 node src/cli.mjs run-scenario fixtures/runs/energy-deficit.v1.json --json
+node src/cli.mjs run-suite fixtures/suites/core-resource-regression.v1.json
+node src/cli.mjs run-suite fixtures/suites/constraint-regression.v1.json --json
 node src/cli.mjs help
 ```
 
 The CLI output is deterministic. It reports only the resource-scenario contract,
-validation, and deterministic transition capabilities as implemented; simulation,
+validation, deterministic transition, and scenario-suite capabilities as
+implemented; simulation,
 scheduler, Bitcoin, AI,
 wallet, trading, network, hardware, and mission-authority capabilities remain
 false.
@@ -62,10 +71,13 @@ documentation. `verify` runs only:
 - `node scripts/validate-clean-skeleton.mjs`
 - `node scripts/validate-resource-scenarios.mjs`
 - `node scripts/validate-resource-transitions.mjs`
+- `node scripts/validate-scenario-suites.mjs`
 - `node --test`
 - `node src/cli.mjs status --json`
 - representative valid and invalid `validate-scenario` CLI checks
 - representative nominal, constraint, and invalid `run-scenario` CLI checks
+- representative valid, constraint-containing, and expected-mismatch
+  `run-suite` CLI checks
 
 No `npm install`, `npm ci`, `pnpm`, `npx`, package build, server, legacy app,
 or external service is required.
@@ -94,12 +106,17 @@ See [docs/legacy-source-access.md](docs/legacy-source-access.md).
 - [Roadmap](docs/roadmap.md)
 - [Resource scenario v1](docs/simulation/resource-scenario-v1.md)
 - [Resource transition v1](docs/simulation/resource-transition-v1.md)
+- [Scenario suite v1](docs/simulation/scenario-suite-v1.md)
 - [Harness evaluation cycle 1 results](docs/incubation/evaluations/cycle-1-results.md)
 - [Harness evaluation cycle 2 plan](docs/incubation/evaluations/cycle-2-plan.md)
 - [Harness evaluation cycle 2 results](docs/incubation/evaluations/cycle-2-results.md)
 - [Harness evaluation cycle 2 friction register](docs/incubation/evaluations/cycle-2-friction-register.md)
+- [Harness evaluation cycle 3 plan](docs/incubation/evaluations/cycle-3-plan.md)
+- [Harness evaluation cycle 3 results](docs/incubation/evaluations/cycle-3-results.md)
+- [Harness evaluation cycle 3 friction register](docs/incubation/evaluations/cycle-3-friction-register.md)
 - [ADR-0001: Re-charter as Orbital Compute Lab](docs/architecture/ADR-0001-recharter-as-orbital-compute-lab.md)
 - [ADR-0002: Deterministic offline-first](docs/architecture/ADR-0002-deterministic-offline-first.md)
 - [ADR-0003: Node standard-library skeleton](docs/architecture/ADR-0003-node-standard-library-skeleton.md)
 - [ADR-0004: Resource Scenario Contract](docs/architecture/ADR-0004-resource-scenario-contract.md)
 - [ADR-0005: Deterministic Resource Transitions](docs/architecture/ADR-0005-deterministic-resource-transitions.md)
+- [ADR-0006: Deterministic Scenario Suites](docs/architecture/ADR-0006-deterministic-scenario-suites.md)

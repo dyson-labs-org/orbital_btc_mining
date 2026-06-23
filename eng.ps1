@@ -56,6 +56,12 @@ function New-Summary {
         constraint_domain_outcome = Get-CheckStatus -Checks $Checks -Name "constraint resource transition run"
         expected_invalid_run_tests = Get-CheckStatus -Checks $Checks -Name "expected invalid transition run"
         deterministic_transition_json = Get-CheckStatus -Checks $Checks -Name "deterministic transition JSON comparison"
+        scenario_suite_contract = Get-CheckStatus -Checks $Checks -Name "node scripts/validate-scenario-suites.mjs"
+        scenario_suite_runner = Get-CheckStatus -Checks $Checks -Name "node scripts/validate-scenario-suites.mjs"
+        suite_execution = Get-CheckStatus -Checks $Checks -Name "valid scenario suite run"
+        expected_domain_constraints = Get-CheckStatus -Checks $Checks -Name "constraint scenario suite run"
+        expected_suite_mismatch_failure = Get-CheckStatus -Checks $Checks -Name "expected suite mismatch run"
+        deterministic_suite_json = Get-CheckStatus -Checks $Checks -Name "deterministic suite JSON comparison"
         capability_validation = Get-CheckStatus -Checks $Checks -Name "node src/cli.mjs status --json"
         checks = $Checks
     }
@@ -177,6 +183,11 @@ try {
             }
             if ($checks[-1].status -eq "failed") { ConvertTo-StatusJson (New-Summary -CommandName "verify" -Checks $checks); exit $checks[-1].exit_code }
 
+            $checks += Invoke-Check -Name "node scripts/validate-scenario-suites.mjs" -Action {
+                & node scripts/validate-scenario-suites.mjs
+            }
+            if ($checks[-1].status -eq "failed") { ConvertTo-StatusJson (New-Summary -CommandName "verify" -Checks $checks); exit $checks[-1].exit_code }
+
             $checks += Invoke-Check -Name "node --test" -Action {
                 & node --test
             }
@@ -200,6 +211,8 @@ try {
                         $status.capabilities.resource_scenario_contract -ne $true -or
                         $status.capabilities.resource_scenario_validation -ne $true -or
                         $status.capabilities.deterministic_resource_transition -ne $true -or
+                        $status.capabilities.scenario_suite_contract -ne $true -or
+                        $status.capabilities.scenario_suite_runner -ne $true -or
                         $status.capabilities.simulation_kernel -ne $false -or
                         $status.capabilities.workload_scheduler -ne $false -or
                         $status.capabilities.bitcoin_workload_model -ne $false -or
@@ -291,6 +304,60 @@ try {
             $checks += $constraintRun
             if ($checks[-1].status -eq "failed") { ConvertTo-StatusJson (New-Summary -CommandName "verify" -Checks $checks -TestCount $testCount); exit $checks[-1].exit_code }
 
+            $validSuite = Invoke-Check -Name "valid scenario suite run" -Action {
+                & node src/cli.mjs run-suite fixtures/suites/core-resource-regression.v1.json --json
+            }
+            if ($validSuite.status -eq "passed") {
+                try {
+                    $payload = ($validSuite.output -join "`n") | ConvertFrom-Json
+                    if ($payload.outcome -ne "passed" -or $payload.case_count -ne 2) {
+                        $validSuite.status = "failed"
+                        $validSuite.exit_code = 1
+                        $validSuite.output += "Core suite did not produce passed outcome."
+                    }
+                } catch {
+                    $validSuite.status = "failed"
+                    $validSuite.exit_code = 1
+                    $validSuite.output += "Core suite JSON could not be parsed."
+                }
+            }
+            $checks += $validSuite
+            if ($checks[-1].status -eq "failed") { ConvertTo-StatusJson (New-Summary -CommandName "verify" -Checks $checks -TestCount $testCount); exit $checks[-1].exit_code }
+
+            $constraintSuite = Invoke-Check -Name "constraint scenario suite run" -Action {
+                & node src/cli.mjs run-suite fixtures/suites/constraint-regression.v1.json --json
+            }
+            if ($constraintSuite.status -eq "passed") {
+                try {
+                    $payload = ($constraintSuite.output -join "`n") | ConvertFrom-Json
+                    if ($payload.outcome -ne "passed" -or $payload.case_count -ne 3) {
+                        $constraintSuite.status = "failed"
+                        $constraintSuite.exit_code = 1
+                        $constraintSuite.output += "Constraint suite did not produce passed outcome."
+                    }
+                } catch {
+                    $constraintSuite.status = "failed"
+                    $constraintSuite.exit_code = 1
+                    $constraintSuite.output += "Constraint suite JSON could not be parsed."
+                }
+            }
+            $checks += $constraintSuite
+            if ($checks[-1].status -eq "failed") { ConvertTo-StatusJson (New-Summary -CommandName "verify" -Checks $checks -TestCount $testCount); exit $checks[-1].exit_code }
+
+            $mismatchSuite = Invoke-Check -Name "expected suite mismatch run" -Action {
+                $mismatchOutput = & node src/cli.mjs run-suite fixtures/suites/invalid/expectation-mismatch.v1.json --json
+                $mismatchCode = $LASTEXITCODE
+                $mismatchOutput
+                if ($mismatchCode -eq 1 -and (($mismatchOutput -join "`n") -match "outcome_mismatch")) {
+                    $global:LASTEXITCODE = 0
+                } else {
+                    "Expected suite mismatch to exit 1 with outcome_mismatch, got $mismatchCode."
+                    $global:LASTEXITCODE = 1
+                }
+            }
+            $checks += $mismatchSuite
+            if ($checks[-1].status -eq "failed") { ConvertTo-StatusJson (New-Summary -CommandName "verify" -Checks $checks -TestCount $testCount); exit $checks[-1].exit_code }
+
             $invalidRun = Invoke-Check -Name "expected invalid transition run" -Action {
                 $badOutput = & node src/cli.mjs run-scenario fixtures/scenarios/invalid/malformed-json.v1.json --json
                 $badCode = $LASTEXITCODE
@@ -321,6 +388,24 @@ try {
                 }
             }
             $checks += $deterministicRun
+            if ($checks[-1].status -eq "failed") { ConvertTo-StatusJson (New-Summary -CommandName "verify" -Checks $checks -TestCount $testCount); exit $checks[-1].exit_code }
+
+            $deterministicSuite = Invoke-Check -Name "deterministic suite JSON comparison" -Action {
+                $one = & node src/cli.mjs run-suite fixtures/suites/constraint-regression.v1.json --json
+                $codeOne = $LASTEXITCODE
+                $two = & node src/cli.mjs run-suite fixtures/suites/constraint-regression.v1.json --json
+                $codeTwo = $LASTEXITCODE
+                $three = & node src/cli.mjs run-suite fixtures/suites/constraint-regression.v1.json --json
+                $codeThree = $LASTEXITCODE
+                if ($codeOne -eq 0 -and $codeTwo -eq 0 -and $codeThree -eq 0 -and ($one -join "`n") -eq ($two -join "`n") -and ($two -join "`n") -eq ($three -join "`n")) {
+                    "deterministic suite output matched across three runs"
+                    $global:LASTEXITCODE = 0
+                } else {
+                    "Suite JSON output was not deterministic."
+                    $global:LASTEXITCODE = 1
+                }
+            }
+            $checks += $deterministicSuite
             if ($checks[-1].status -eq "failed") { ConvertTo-StatusJson (New-Summary -CommandName "verify" -Checks $checks -TestCount $testCount); exit $checks[-1].exit_code }
 
             ConvertTo-StatusJson (New-Summary -CommandName "verify" -Checks $checks -TestCount $testCount)

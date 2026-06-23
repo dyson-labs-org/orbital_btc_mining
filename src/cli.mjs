@@ -7,6 +7,10 @@ import {
   runScenarioDocument,
   transitionResultPayload
 } from "./domain/resource-transition.mjs";
+import {
+  runScenarioSuiteFile,
+  suiteRunPayload
+} from "./domain/scenario-suite.mjs";
 import { productStatus, statusJson } from "./status.mjs";
 
 const args = process.argv.slice(2);
@@ -23,6 +27,8 @@ function writeHelp() {
       "  validate-scenario <path> --json Print validation as deterministic JSON.",
       "  run-scenario <path>            Run deterministic resource transitions.",
       "  run-scenario <path> --json     Print transition result as deterministic JSON.",
+      "  run-suite <path>               Run a deterministic scenario-suite.v1 file.",
+      "  run-suite <path> --json        Print suite result as deterministic JSON.",
       "  help                           Print this help.",
       "",
       "No simulation kernel, workload scheduler, Bitcoin workload, AI workload, wallet,",
@@ -39,6 +45,8 @@ function writeStatusText() {
   process.stdout.write("resource scenario contract: implemented\n");
   process.stdout.write("resource scenario validation: implemented\n");
   process.stdout.write("deterministic resource transition: implemented\n");
+  process.stdout.write("scenario suite contract: implemented\n");
+  process.stdout.write("scenario suite runner: implemented\n");
   process.stdout.write("scheduler: not implemented\n");
   process.stdout.write("bitcoin behavior: not implemented\n");
   process.stdout.write("ai behavior: not implemented\n");
@@ -70,9 +78,14 @@ function writeTransitionJson(result) {
   process.stdout.write(`${JSON.stringify(transitionResultPayload(result), null, 2)}\n`);
 }
 
+function writeSuiteJson(result) {
+  process.stdout.write(`${JSON.stringify(suiteRunPayload(result), null, 2)}\n`);
+}
+
 function writeErrors(errors) {
   for (const item of errors) {
-    process.stderr.write(`${item.code} ${item.path}: ${item.message}\n`);
+    const prefix = item.case_id ? `${item.case_id} ` : "";
+    process.stderr.write(`${prefix}${item.code} ${item.path}: ${item.message}\n`);
   }
 }
 
@@ -150,6 +163,37 @@ function runScenario(argv) {
   return result.process_status === "internal_error" ? 3 : 1;
 }
 
+function runSuite(argv) {
+  const [suitePath, option, extra] = argv;
+  if (!suitePath) {
+    process.stderr.write("Missing suite path. Use `run-suite <path>` or `run-suite <path> --json`.\n");
+    return 2;
+  }
+  if (extra || (option && option !== "--json")) {
+    process.stderr.write("Unknown run-suite option. Use `run-suite <path>` or `run-suite <path> --json`.\n");
+    return 2;
+  }
+
+  const json = option === "--json";
+  const result = runScenarioSuiteFile(suitePath);
+  if (json) {
+    writeSuiteJson(result);
+  } else if (!result.ok) {
+    writeErrors(result.errors);
+  } else if (result.outcome !== "passed") {
+    for (const item of result.cases.filter((caseResult) => !caseResult.matched)) {
+      process.stderr.write(`${item.case_id}: ${item.failure_codes.join(",")}\n`);
+    }
+  } else {
+    process.stdout.write(`passed scenario suite: ${result.suite_id}\n`);
+  }
+
+  if (result.ok && result.outcome === "passed") {
+    return 0;
+  }
+  return result.process_status === "internal_error" ? 3 : 1;
+}
+
 function main(argv) {
   const [command, option, extra] = argv;
 
@@ -177,6 +221,10 @@ function main(argv) {
 
   if (command === "run-scenario") {
     return runScenario(argv.slice(1));
+  }
+
+  if (command === "run-suite") {
+    return runSuite(argv.slice(1));
   }
 
   process.stderr.write(`Unknown command: ${command}\n`);

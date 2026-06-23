@@ -1,0 +1,11 @@
+{
+  "schema_version": "scenario-suite.v1",
+  "suite_id": "invalid-outcome",
+  "cases": [
+    {
+      "case_id": "nominal",
+      "scenario_path": "fixtures/runs/nominal-resource-run.v1.json",
+      "expected_outcome": "maybe"
+    }
+  ]
+}

@@ -42,12 +42,16 @@ test("eng verify surface remains offline and bounded", () => {
     "& node scripts/validate-clean-skeleton.mjs",
     "& node scripts/validate-resource-scenarios.mjs",
     "& node scripts/validate-resource-transitions.mjs",
+    "& node scripts/validate-scenario-suites.mjs",
     "& node --test",
     "& node src/cli.mjs status --json",
     "& node src/cli.mjs validate-scenario fixtures/scenarios/minimal-sunlit.v1.json --json",
     "& node src/cli.mjs run-scenario fixtures/runs/nominal-resource-run.v1.json --json",
-    "& node src/cli.mjs run-scenario fixtures/runs/energy-deficit.v1.json --json"
+    "& node src/cli.mjs run-scenario fixtures/runs/energy-deficit.v1.json --json",
+    "& node src/cli.mjs run-suite fixtures/suites/core-resource-regression.v1.json --json",
+    "& node src/cli.mjs run-suite fixtures/suites/constraint-regression.v1.json --json",
   ]);
+  assert.match(eng, /node src\/cli\.mjs run-suite fixtures\/suites\/invalid\/expectation-mismatch\.v1\.json --json|node src\\cli\.mjs run-suite fixtures\/suites\/invalid\/expectation-mismatch\.v1\.json --json/);
   assert.doesNotMatch(
     eng,
     /pip install|npm install|npm ci|pnpm|npx|gunicorn|flask run|python (?:app|main)\.py|Invoke-Expression|Invoke-WebRequest|Invoke-RestMethod|curl |wget|git push|git fetch|git pull|git clone|git add|git commit|Remove-Item|Set-Content|New-Item|Out-File|Tee-Object|Start-Process/

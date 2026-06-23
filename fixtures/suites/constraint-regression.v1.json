@@ -1,0 +1,31 @@
+{
+  "schema_version": "scenario-suite.v1",
+  "suite_id": "constraint-regression",
+  "cases": [
+    {
+      "case_id": "energy-deficit",
+      "scenario_path": "fixtures/runs/energy-deficit.v1.json",
+      "expected_outcome": "constraint_violation",
+      "expected_constraint_codes": [
+        "ENERGY_DEFICIT"
+      ]
+    },
+    {
+      "case_id": "thermal-capacity",
+      "scenario_path": "fixtures/runs/thermal-capacity.v1.json",
+      "expected_outcome": "constraint_violation",
+      "expected_constraint_codes": [
+        "THERMAL_CAPACITY_EXCEEDED"
+      ]
+    },
+    {
+      "case_id": "combined-constraints",
+      "scenario_path": "fixtures/runs/combined-constraints.v1.json",
+      "expected_outcome": "constraint_violation",
+      "expected_constraint_codes": [
+        "ENERGY_DEFICIT",
+        "THERMAL_CAPACITY_EXCEEDED"
+      ]
+    }
+  ]
+}

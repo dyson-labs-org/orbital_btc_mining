@@ -1,0 +1,14 @@
+{
+  "schema_version": "scenario-suite.v1",
+  "suite_id": "expectation-mismatch",
+  "cases": [
+    {
+      "case_id": "nominal-expected-constraint",
+      "scenario_path": "fixtures/runs/nominal-resource-run.v1.json",
+      "expected_outcome": "constraint_violation",
+      "expected_constraint_codes": [
+        "ENERGY_DEFICIT"
+      ]
+    }
+  ]
+}

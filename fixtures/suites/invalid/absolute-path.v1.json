@@ -1,0 +1,11 @@
+{
+  "schema_version": "scenario-suite.v1",
+  "suite_id": "absolute-path",
+  "cases": [
+    {
+      "case_id": "absolute",
+      "scenario_path": "/fixtures/runs/nominal-resource-run.v1.json",
+      "expected_outcome": "completed"
+    }
+  ]
+}

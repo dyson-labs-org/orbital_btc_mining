@@ -13,6 +13,8 @@ export const productStatus = Object.freeze({
     resource_scenario_contract: true,
     resource_scenario_validation: true,
     deterministic_resource_transition: true,
+    scenario_suite_contract: true,
+    scenario_suite_runner: true,
     simulation_kernel: false,
     orbital_resource_model: false,
     workload_scheduler: false,
