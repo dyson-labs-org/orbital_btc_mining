@@ -3,20 +3,23 @@
 Orbital Compute Lab is an incubation repository for offline, deterministic
 study of constrained orbital resource allocation concepts.
 
-Status: incubation skeleton with a deterministic resource-scenario contract.
+Status: incubation skeleton with deterministic resource-scenario validation and resource transitions.
 
 The active product tree contains only dependency-free Node.js product metadata,
-an honest status CLI, a resource-scenario contract validator, tests, and
-documentation. It does not implement a simulation kernel, scheduler, Bitcoin
+an honest status CLI, a resource-scenario contract validator, a deterministic
+resource-transition engine, tests, and documentation. It does not implement a
+simulation kernel, scheduler, Bitcoin
 workload, AI workload, wallet, trading behavior, hosted AI behavior, network
 behavior, hardware control, or mission authority.
 
 ## Current Status
 
-- Incubation stage: I1A Deterministic Resource-Scenario Contract.
+- Incubation stage: I1B Deterministic Resource Transitions.
 - Product implementation: skeleton.
-- Harness evaluation cycle 1: `pass_with_findings`, pending merge.
+- Harness evaluation cycle 1: `pass_with_findings`, merged.
+- Harness evaluation cycle 2: preregistered, in progress.
 - Resource-scenario contract: implemented for deterministic input validation.
+- Resource-transition engine: implemented for deterministic local resource accounting.
 - Legacy source: removed from active main and preserved on
   `legacy/pre-orbital-compute-lab`.
 - Preserved legacy SHA: `c93c7366edcd86b83896c3c39b753805183c3126`.
@@ -31,11 +34,14 @@ node src/cli.mjs status
 node src/cli.mjs status --json
 node src/cli.mjs validate-scenario fixtures/scenarios/minimal-sunlit.v1.json
 node src/cli.mjs validate-scenario fixtures/scenarios/minimal-sunlit.v1.json --json
+node src/cli.mjs run-scenario fixtures/runs/nominal-resource-run.v1.json
+node src/cli.mjs run-scenario fixtures/runs/energy-deficit.v1.json --json
 node src/cli.mjs help
 ```
 
-The CLI output is deterministic. It reports only the resource-scenario contract
-and validation capabilities as implemented; simulation, scheduler, Bitcoin, AI,
+The CLI output is deterministic. It reports only the resource-scenario contract,
+validation, and deterministic transition capabilities as implemented; simulation,
+scheduler, Bitcoin, AI,
 wallet, trading, network, hardware, and mission-authority capabilities remain
 false.
 
@@ -55,9 +61,11 @@ documentation. `verify` runs only:
 - `node scripts/validate-incubation-charter.mjs`
 - `node scripts/validate-clean-skeleton.mjs`
 - `node scripts/validate-resource-scenarios.mjs`
+- `node scripts/validate-resource-transitions.mjs`
 - `node --test`
 - `node src/cli.mjs status --json`
 - representative valid and invalid `validate-scenario` CLI checks
+- representative nominal, constraint, and invalid `run-scenario` CLI checks
 
 No `npm install`, `npm ci`, `pnpm`, `npx`, package build, server, legacy app,
 or external service is required.
@@ -85,8 +93,11 @@ See [docs/legacy-source-access.md](docs/legacy-source-access.md).
 - [Verification plan](docs/verification-plan.md)
 - [Roadmap](docs/roadmap.md)
 - [Resource scenario v1](docs/simulation/resource-scenario-v1.md)
+- [Resource transition v1](docs/simulation/resource-transition-v1.md)
 - [Harness evaluation cycle 1 results](docs/incubation/evaluations/cycle-1-results.md)
+- [Harness evaluation cycle 2 plan](docs/incubation/evaluations/cycle-2-plan.md)
 - [ADR-0001: Re-charter as Orbital Compute Lab](docs/architecture/ADR-0001-recharter-as-orbital-compute-lab.md)
 - [ADR-0002: Deterministic offline-first](docs/architecture/ADR-0002-deterministic-offline-first.md)
 - [ADR-0003: Node standard-library skeleton](docs/architecture/ADR-0003-node-standard-library-skeleton.md)
 - [ADR-0004: Resource Scenario Contract](docs/architecture/ADR-0004-resource-scenario-contract.md)
+- [ADR-0005: Deterministic Resource Transitions](docs/architecture/ADR-0005-deterministic-resource-transitions.md)

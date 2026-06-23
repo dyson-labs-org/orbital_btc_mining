@@ -1,0 +1,32 @@
+{
+  "schema_version": "resource-scenario.v1",
+  "scenario_id": "nominal-resource-run",
+  "step_duration_ms": 1000,
+  "step_count": 2,
+  "initial_state": {
+    "battery_energy_millijoules": 500,
+    "battery_capacity_millijoules": 1000,
+    "thermal_load_millijoules": 100,
+    "thermal_capacity_millijoules": 500
+  },
+  "environment_steps": [
+    {
+      "step": 0,
+      "solar_input_millijoules": 200,
+      "base_load_millijoules": 100,
+      "thermal_input_millijoules": 30,
+      "thermal_dissipation_millijoules": 20,
+      "communications_available": false,
+      "downlink_capacity_bytes": 0
+    },
+    {
+      "step": 1,
+      "solar_input_millijoules": 300,
+      "base_load_millijoules": 150,
+      "thermal_input_millijoules": 40,
+      "thermal_dissipation_millijoules": 30,
+      "communications_available": true,
+      "downlink_capacity_bytes": 1024
+    }
+  ]
+}

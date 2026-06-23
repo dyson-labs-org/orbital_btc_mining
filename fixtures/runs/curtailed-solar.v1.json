@@ -1,0 +1,23 @@
+{
+  "schema_version": "resource-scenario.v1",
+  "scenario_id": "curtailed-solar",
+  "step_duration_ms": 1000,
+  "step_count": 1,
+  "initial_state": {
+    "battery_energy_millijoules": 900,
+    "battery_capacity_millijoules": 1000,
+    "thermal_load_millijoules": 20,
+    "thermal_capacity_millijoules": 100
+  },
+  "environment_steps": [
+    {
+      "step": 0,
+      "solar_input_millijoules": 200,
+      "base_load_millijoules": 50,
+      "thermal_input_millijoules": 5,
+      "thermal_dissipation_millijoules": 10,
+      "communications_available": false,
+      "downlink_capacity_bytes": 0
+    }
+  ]
+}

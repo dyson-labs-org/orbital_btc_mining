@@ -12,3 +12,6 @@
   validation command, fixtures, and expected-negative verification.
 - Record harness evaluation cycle 1 as `pass_with_findings` with product and
   harness results separated.
+- Add the I1B deterministic resource-transition engine, typed domain outcomes,
+  run fixtures, CLI run command, canonical verification checks, and Cycle 2
+  preregistration.
