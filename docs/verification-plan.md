@@ -67,3 +67,11 @@ Generated evidence belongs under ignored artifact directories such as
 - Portal health, invoice, smoke, integration, dispatch, or executor checks.
 - Performance, economics, scientific correctness, profitability, or orbital
   feasibility claims.
+
+## CI Baseline
+
+The active CI workflow runs `./eng.ps1 verify` on Windows and Ubuntu with
+Node.js 22. It does not run `npm install`, `npm ci`, `pnpm`, `npx`, dependency
+caches, artifact upload, deployment, release, or repository-secret steps because
+the skeleton has no dependencies and the canonical verification path is
+dependency-free.
