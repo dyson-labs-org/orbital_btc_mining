@@ -17,7 +17,7 @@ behavior, hardware control, or mission authority.
 - Incubation stage: I1B Deterministic Resource Transitions.
 - Product implementation: skeleton.
 - Harness evaluation cycle 1: `pass_with_findings`, merged.
-- Harness evaluation cycle 2: preregistered, in progress.
+- Harness evaluation cycle 2: product-head `pass_with_findings`, final PR validation pending.
 - Resource-scenario contract: implemented for deterministic input validation.
 - Resource-transition engine: implemented for deterministic local resource accounting.
 - Legacy source: removed from active main and preserved on
@@ -96,6 +96,8 @@ See [docs/legacy-source-access.md](docs/legacy-source-access.md).
 - [Resource transition v1](docs/simulation/resource-transition-v1.md)
 - [Harness evaluation cycle 1 results](docs/incubation/evaluations/cycle-1-results.md)
 - [Harness evaluation cycle 2 plan](docs/incubation/evaluations/cycle-2-plan.md)
+- [Harness evaluation cycle 2 results](docs/incubation/evaluations/cycle-2-results.md)
+- [Harness evaluation cycle 2 friction register](docs/incubation/evaluations/cycle-2-friction-register.md)
 - [ADR-0001: Re-charter as Orbital Compute Lab](docs/architecture/ADR-0001-recharter-as-orbital-compute-lab.md)
 - [ADR-0002: Deterministic offline-first](docs/architecture/ADR-0002-deterministic-offline-first.md)
 - [ADR-0003: Node standard-library skeleton](docs/architecture/ADR-0003-node-standard-library-skeleton.md)

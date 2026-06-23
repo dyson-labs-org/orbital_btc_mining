@@ -15,3 +15,5 @@
 - Add the I1B deterministic resource-transition engine, typed domain outcomes,
   run fixtures, CLI run command, canonical verification checks, and Cycle 2
   preregistration.
+- Record harness evaluation cycle 2 as `pass_with_findings`, with product
+  behavior separated from harness integrity and evidence-packaging findings.
