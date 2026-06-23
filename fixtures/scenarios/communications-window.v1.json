@@ -1,0 +1,32 @@
+{
+  "schema_version": "resource-scenario.v1",
+  "scenario_id": "communications-window",
+  "step_duration_ms": 500,
+  "step_count": 2,
+  "initial_state": {
+    "battery_energy_millijoules": 4000,
+    "battery_capacity_millijoules": 5000,
+    "thermal_load_millijoules": 150,
+    "thermal_capacity_millijoules": 900
+  },
+  "environment_steps": [
+    {
+      "step": 0,
+      "solar_input_millijoules": 600,
+      "base_load_millijoules": 300,
+      "thermal_input_millijoules": 35,
+      "thermal_dissipation_millijoules": 20,
+      "communications_available": true,
+      "downlink_capacity_bytes": 2048
+    },
+    {
+      "step": 1,
+      "solar_input_millijoules": 550,
+      "base_load_millijoules": 300,
+      "thermal_input_millijoules": 30,
+      "thermal_dissipation_millijoules": 25,
+      "communications_available": true,
+      "downlink_capacity_bytes": 4096
+    }
+  ]
+}

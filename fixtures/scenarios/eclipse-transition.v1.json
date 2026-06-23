@@ -1,0 +1,40 @@
+{
+  "schema_version": "resource-scenario.v1",
+  "scenario_id": "eclipse-transition",
+  "step_duration_ms": 1000,
+  "step_count": 3,
+  "initial_state": {
+    "battery_energy_millijoules": 6000,
+    "battery_capacity_millijoules": 8000,
+    "thermal_load_millijoules": 200,
+    "thermal_capacity_millijoules": 1000
+  },
+  "environment_steps": [
+    {
+      "step": 0,
+      "solar_input_millijoules": 1200,
+      "base_load_millijoules": 500,
+      "thermal_input_millijoules": 70,
+      "thermal_dissipation_millijoules": 40,
+      "communications_available": false
+    },
+    {
+      "step": 1,
+      "solar_input_millijoules": 0,
+      "base_load_millijoules": 500,
+      "thermal_input_millijoules": 40,
+      "thermal_dissipation_millijoules": 50,
+      "communications_available": false,
+      "downlink_capacity_bytes": 0
+    },
+    {
+      "step": 2,
+      "solar_input_millijoules": 800,
+      "base_load_millijoules": 500,
+      "thermal_input_millijoules": 60,
+      "thermal_dissipation_millijoules": 45,
+      "communications_available": true,
+      "downlink_capacity_bytes": 1024
+    }
+  ]
+}

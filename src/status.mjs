@@ -10,6 +10,8 @@ export const productStatus = Object.freeze({
   },
   version: "0.0.0",
   capabilities: Object.freeze({
+    resource_scenario_contract: true,
+    resource_scenario_validation: true,
     simulation_kernel: false,
     orbital_resource_model: false,
     bitcoin_workload_model: false,

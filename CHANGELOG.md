@@ -8,3 +8,5 @@
   status CLI.
 - Add I0.5 validation for no dependencies, no network behavior, no subprocess
   behavior, no simulation kernel, no Bitcoin behavior, and no AI behavior.
+- Add the I1A `resource-scenario.v1` contract, deterministic validator, CLI
+  validation command, fixtures, and expected-negative verification.

@@ -1,3 +1,8 @@
+import fs from "node:fs";
+import {
+  scenarioValidationPayload,
+  validateScenarioDocument
+} from "./domain/resource-scenario.mjs";
 import { productStatus, statusJson } from "./status.mjs";
 
 const args = process.argv.slice(2);
@@ -8,9 +13,11 @@ function writeHelp() {
       "Orbital Compute Lab",
       "",
       "Commands:",
-      "  status        Print deterministic incubation skeleton status.",
-      "  status --json Print the status object as JSON.",
-      "  help          Print this help.",
+      "  status                         Print deterministic incubation status.",
+      "  status --json                  Print the status object as JSON.",
+      "  validate-scenario <path>       Validate a resource-scenario.v1 file.",
+      "  validate-scenario <path> --json Print validation as deterministic JSON.",
+      "  help                           Print this help.",
       "",
       "No simulation kernel, scheduler, Bitcoin workload, AI workload, wallet,",
       "trading, external network, hardware, or mission-authority behavior is implemented."
@@ -23,9 +30,73 @@ function writeStatusText() {
   process.stdout.write(`status: ${productStatus.implementation_status}\n`);
   process.stdout.write(`maturity: ${productStatus.maturity}\n`);
   process.stdout.write("simulation: not implemented\n");
+  process.stdout.write("resource scenario contract: implemented\n");
   process.stdout.write("bitcoin behavior: not implemented\n");
   process.stdout.write("ai behavior: not implemented\n");
   process.stdout.write("external network: none\n");
+}
+
+function readScenario(path) {
+  try {
+    return { ok: true, text: fs.readFileSync(path, "utf8"), errors: [] };
+  } catch {
+    return {
+      ok: false,
+      errors: [
+        {
+          code: "scenario_file_not_found",
+          path: "$",
+          message: "Scenario file could not be read."
+        }
+      ]
+    };
+  }
+}
+
+function writeValidationJson(result) {
+  process.stdout.write(`${JSON.stringify(scenarioValidationPayload(result), null, 2)}\n`);
+}
+
+function writeValidationErrors(errors) {
+  for (const item of errors) {
+    process.stderr.write(`${item.code} ${item.path}: ${item.message}\n`);
+  }
+}
+
+function validateScenario(argv) {
+  const [scenarioPath, option, extra] = argv;
+  if (!scenarioPath) {
+    process.stderr.write("Missing scenario path. Use `validate-scenario <path>` or `validate-scenario <path> --json`.\n");
+    return 2;
+  }
+  if (extra || (option && option !== "--json")) {
+    process.stderr.write("Unknown validate-scenario option. Use `validate-scenario <path>` or `validate-scenario <path> --json`.\n");
+    return 2;
+  }
+
+  const json = option === "--json";
+  const read = readScenario(scenarioPath);
+  if (!read.ok) {
+    const result = { ok: false, scenario: null, errors: read.errors };
+    if (json) {
+      writeValidationJson(result);
+    } else {
+      writeValidationErrors(result.errors);
+    }
+    return 1;
+  }
+
+  const result = validateScenarioDocument(read.text);
+  if (json) {
+    writeValidationJson(result);
+    return result.ok ? 0 : 1;
+  }
+  if (!result.ok) {
+    writeValidationErrors(result.errors);
+    return 1;
+  }
+  process.stdout.write(`valid resource scenario: ${result.scenario.scenario_id}\n`);
+  return 0;
 }
 
 function main(argv) {
@@ -47,6 +118,10 @@ function main(argv) {
     }
     writeStatusText();
     return 0;
+  }
+
+  if (command === "validate-scenario") {
+    return validateScenario(argv.slice(1));
   }
 
   process.stderr.write(`Unknown command: ${command}\n`);
