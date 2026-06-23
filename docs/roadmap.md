@@ -15,9 +15,9 @@ Exit gate: local charter validator and harness checks passed before merge.
 
 ## I0.5 - Legacy Isolation and Clean Product Skeleton
 
-Status: in_progress_pending_merge.
+Status: complete.
 
-Outcome: remove legacy implementation from active main while preserving it on
+Outcome: removed legacy implementation from active main while preserving it on
 `legacy/pre-orbital-compute-lab`, add a dependency-free Node.js skeleton, expose
 an honest deterministic status CLI, and verify offline on Windows and Ubuntu.
 
@@ -34,8 +34,6 @@ Exit criteria:
 - CI passing;
 - human approval and merge.
 
-I0.5 must not be marked complete before merge.
-
 ## I1 - Deterministic Simulation Kernel
 
 Status: not_started.
@@ -44,6 +42,21 @@ Outcome: introduce a minimal offline simulation kernel with deterministic input
 fixtures, expected outputs, and uncertainty notes.
 
 Exit gate: repeatable tests verify kernel behavior without external calls.
+
+### I1A - Deterministic Resource-Scenario Contract
+
+Status: in_progress_pending_merge.
+
+Outcome: define `resource-scenario.v1`, deterministic fixture validation, and a
+CLI validation surface for future simulation inputs.
+
+Boundary: I1A does not implement the simulation kernel, scheduler, Bitcoin
+workloads, AI workloads, telemetry, orbital propagation, optimization, wallet
+behavior, network behavior, hardware control, or mission authority.
+
+Exit gate: local verification and review packet evidence show deterministic
+validation, honest status metadata, expected-negative fixtures, no dependencies,
+and no provider or adapter requirement.
 
 ## I2 - Workload/Scheduler
 

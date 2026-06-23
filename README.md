@@ -15,6 +15,7 @@ behavior, hardware control, or mission authority.
 
 - Incubation stage: I1A Deterministic Resource-Scenario Contract.
 - Product implementation: skeleton.
+- Harness evaluation cycle 1: `pass_with_findings`, pending merge.
 - Resource-scenario contract: implemented for deterministic input validation.
 - Legacy source: removed from active main and preserved on
   `legacy/pre-orbital-compute-lab`.
@@ -84,6 +85,7 @@ See [docs/legacy-source-access.md](docs/legacy-source-access.md).
 - [Verification plan](docs/verification-plan.md)
 - [Roadmap](docs/roadmap.md)
 - [Resource scenario v1](docs/simulation/resource-scenario-v1.md)
+- [Harness evaluation cycle 1 results](docs/incubation/evaluations/cycle-1-results.md)
 - [ADR-0001: Re-charter as Orbital Compute Lab](docs/architecture/ADR-0001-recharter-as-orbital-compute-lab.md)
 - [ADR-0002: Deterministic offline-first](docs/architecture/ADR-0002-deterministic-offline-first.md)
 - [ADR-0003: Node standard-library skeleton](docs/architecture/ADR-0003-node-standard-library-skeleton.md)
