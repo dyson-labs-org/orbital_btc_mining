@@ -3,9 +3,9 @@
 ## Operating Mode
 
 Orbital Compute Lab operates in incubation mode. Verification must be local,
-deterministic, and offline. The repository may contain legacy files that mention
-deployment, email, Google Sheets, web servers, or Bitcoin economics, but those
-paths are not authorized execution surfaces for I0.
+deterministic, and offline. Legacy implementation source has been removed from
+active main and preserved on `legacy/pre-orbital-compute-lab` for read-only
+inspection.
 
 ## Allowed In I0
 
@@ -16,6 +16,8 @@ paths are not authorized execution surfaces for I0.
 - `.\eng.ps1 bootstrap`.
 - `.\eng.ps1 verify`.
 - `git diff --check`.
+- `node src/cli.mjs status`.
+- `node src/cli.mjs status --json`.
 
 ## Not Authorized In I0
 
@@ -31,6 +33,8 @@ paths are not authorized execution surfaces for I0.
   or package-manager lint commands.
 - Portal health checks, invoice creation, integration tests, smoke tests,
   dispatch commands, executor commands, or live service probes.
+- Simulation kernel, scheduler, Bitcoin workload, AI workload, wallet, trading,
+  hosted AI, hardware control, telemetry, or mission-authority implementation.
 
 ## Data And Credential Boundary
 
@@ -43,7 +47,7 @@ paths are not authorized execution surfaces for I0.
 
 ## External Service Boundary
 
-The current tree references Google Sheets, Gmail-style email delivery, Render,
-GitHub URLs, AWS Ground Station names in static data, and a local Flask URL.
-These references are legacy inventory only. Harness verification must not call
+Historical audit documents reference Google Sheets, Gmail-style email delivery,
+Render, GitHub URLs, AWS-named static data, and a local Flask URL. These are
+legacy inventory only. Active source and harness verification must not call
 those services.

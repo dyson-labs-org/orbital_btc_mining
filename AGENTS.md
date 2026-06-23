@@ -11,7 +11,10 @@ Security boundaries:
 - Do not silently mutate provider state.
 - Do not run legacy deployment, server, Google Sheets, email, package-install,
   auto-commit, invoice, portal, smoke, integration, dispatch, or executor
-  commands during I0.
+  commands during I0.5.
+- Do not implement simulation, scheduler, Bitcoin workload, AI workload,
+  wallet, trading, hosted AI, hardware control, telemetry, or mission authority
+  in I0.5.
 - Do not add direct database integrations.
 - Do not create `.agent-harness/project.json` until the harness has a reviewed
   project schema for incubation repositories.
@@ -29,7 +32,7 @@ Definition of done:
 Dependencies:
 
 - Prefer built-in language/runtime capabilities.
-- Do not add runtime dependencies for I0.
+- Do not add runtime dependencies for I0.5.
 - Do not run package installation commands as part of I0 verification.
 
 Generated artifacts:

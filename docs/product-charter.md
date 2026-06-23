@@ -21,6 +21,8 @@ provider integration is considered.
 - Document safety boundaries, provenance risks, command surfaces, and research
   assumptions.
 - Establish a harness-compatible task contract and validator.
+- Isolate legacy source from active main while preserving the protected branch.
+- Establish a dependency-free product skeleton with an honest status CLI.
 - Define a roadmap from audit-only incubation to an optional demonstrator.
 
 ## Non-Goals
@@ -30,7 +32,8 @@ provider integration is considered.
 - No external service calls during verification.
 - No Render, Flask, Google Sheets, email, or provider deployment work.
 - No package installation or dependency update in I0.
-- No deletion of legacy source as part of this re-charter.
+- No simulation kernel, scheduler, Bitcoin workload, AI workload, wallet,
+  trading, hardware control, or mission-authority behavior in I0.5.
 
 ## Product Principles
 
@@ -41,9 +44,19 @@ provider integration is considered.
 - Provider-neutral: do not add provider-specific configuration or credentials.
 - Audit-preserving: legacy material stays visible until a later reviewed
   cleanup milestone explicitly retires it.
+- Skeleton honesty: metadata and CLI output must report only implemented
+  capabilities.
 
 ## I0 Exit Criteria
 
 I0 is complete only when the charter, safety boundary, audit report, roadmap,
 task contract, validator, and local harness checks pass. I0 does not prove that
 the legacy simulation is correct, safe to deploy, or ready for users.
+
+## I0.5 Exit Criteria
+
+I0.5 remains pending until merged. The feature branch must preserve the legacy
+branch, remove legacy implementation from active main, add a dependency-free
+Node.js skeleton, verify offline on Windows and Ubuntu, retain audit and
+licensing uncertainty, record harness friction, and receive human review. It
+must not start I1.
