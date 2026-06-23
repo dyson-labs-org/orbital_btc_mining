@@ -50,9 +50,22 @@ test("eng verify surface remains offline and bounded", () => {
 });
 
 test("preserved legacy branch resolves to the documented baseline", () => {
-  const head = execFileSync("git", ["rev-parse", "--verify", "legacy/pre-orbital-compute-lab"], {
-    encoding: "utf8"
-  }).trim();
+  const refs = [
+    "refs/heads/legacy/pre-orbital-compute-lab",
+    "refs/remotes/origin/legacy/pre-orbital-compute-lab"
+  ];
+  const head = refs
+    .map((ref) => {
+      try {
+        return execFileSync("git", ["rev-parse", "--verify", ref], {
+          encoding: "utf8",
+          stdio: ["ignore", "pipe", "ignore"]
+        }).trim();
+      } catch {
+        return null;
+      }
+    })
+    .find(Boolean);
   assert.equal(head, baselineSha);
 });
 
