@@ -1,0 +1,57 @@
+{
+  "schema_version": "0.1",
+  "task_id": "orbital-compute-lab-i0-audit-recharter",
+  "repository": "dyson-labs-org/orbital_btc_mining",
+  "local_directory_name": "orbital_btc_mining",
+  "classification": "incubation",
+  "release_gate": "I0 Audit/Re-charter",
+  "baseline_sha": "c93c7366edcd86b83896c3c39b753805183c3126",
+  "preserved_branch": "legacy/pre-orbital-compute-lab",
+  "work_branch": "incubation/orbital-compute-lab-charter",
+  "product_implementation": "not_started",
+  "external_calls": "none",
+  "legacy_source": "not_run",
+  "project_json": {
+    "status": "not_created",
+    "reason": "No reviewed incubation project schema is available for this repository yet."
+  },
+  "required_documents": [
+    "README.md",
+    "docs/product-charter.md",
+    "docs/safety-boundaries.md",
+    "docs/legacy-inventory.md",
+    "docs/audit-report.md",
+    "docs/research-assumptions.md",
+    "docs/verification-plan.md",
+    "docs/roadmap.md",
+    "docs/architecture/ADR-0001-recharter-as-orbital-compute-lab.md",
+    "docs/architecture/ADR-0002-deterministic-offline-first.md"
+  ],
+  "allowed_verify_commands": [
+    "git diff --check",
+    "node scripts/validate-incubation-charter.mjs",
+    "node --test tests/incubation-charter.test.mjs"
+  ],
+  "legacy_command_status": {
+    "pip install -r requirements.txt": "not_run",
+    "python app.py": "not_run",
+    "gunicorn app:app": "not_run",
+    "render build/start": "not_run",
+    "analysis/lastrow.py": "not_run",
+    "analysis/goog.py": "not_run",
+    "autocommit.py": "not_run",
+    "codex_merge.py": "not_run",
+    "package_json_scripts": "empty",
+    "pnpm_workspace_scripts": "empty",
+    "npx_commands": "empty",
+    "portal_health_invoice_integration_smoke_dispatch_exec": "empty"
+  },
+  "status_vocabulary": [
+    "passed",
+    "failed",
+    "skipped",
+    "not_run",
+    "empty",
+    "noop"
+  ]
+}

@@ -19,3 +19,8 @@ bfg-*.jar
 
 # Misc
 .DS_Store
+
+# Harness artifacts
+.agent-harness/artifacts/
+.agent-harness/tmp/
+audit-output/
