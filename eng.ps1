@@ -22,6 +22,11 @@ function New-Summary {
         [int] $TestCount = 0
     )
 
+    $scenarioCheck = @($Checks | Where-Object { $_.name -eq "node scripts/validate-resource-scenarios.mjs" } | Select-Object -Last 1)
+    $expectedNegativeCheck = @($Checks | Where-Object { $_.name -eq "expected invalid scenario fixture" } | Select-Object -Last 1)
+    $scenarioStatus = if ($scenarioCheck.Count -eq 0) { "not_run" } elseif ($scenarioCheck[0].status -eq "passed") { "passed" } else { "failed" }
+    $expectedNegativeStatus = if ($expectedNegativeCheck.Count -eq 0) { "not_run" } elseif ($expectedNegativeCheck[0].status -eq "passed") { "passed" } else { "failed" }
+
     [ordered]@{
         command = $CommandName
         verification_status = if (@($Checks | Where-Object { $_.status -eq "failed" }).Count -eq 0) { "passed" } else { "failed" }
@@ -34,6 +39,9 @@ function New-Summary {
         simulation_kernel = "not_implemented"
         bitcoin_behavior = "not_implemented"
         ai_behavior = "not_implemented"
+        scenario_contract = $scenarioStatus
+        scenario_fixtures = $scenarioStatus
+        expected_negative_tests = $expectedNegativeStatus
         checks = $Checks
     }
 }
@@ -152,6 +160,14 @@ try {
                 exit $checks[-1].exit_code
             }
 
+            $checks += Invoke-Check -Name "node scripts/validate-resource-scenarios.mjs" -Action {
+                & node scripts/validate-resource-scenarios.mjs
+            }
+            if ($checks[-1].status -eq "failed") {
+                ConvertTo-StatusJson (New-Summary -CommandName "verify" -Checks $checks)
+                exit $checks[-1].exit_code
+            }
+
             $checks += Invoke-Check -Name "node --test" -Action {
                 & node --test
             }
@@ -194,13 +210,53 @@ try {
                 exit $checks[-1].exit_code
             }
 
+            $scenarioCheck = Invoke-Check -Name "node src/cli.mjs validate-scenario fixtures/scenarios/minimal-sunlit.v1.json --json" -Action {
+                & node src/cli.mjs validate-scenario fixtures/scenarios/minimal-sunlit.v1.json --json
+            }
+            if ($scenarioCheck.status -eq "passed") {
+                try {
+                    $scenarioResult = ($scenarioCheck.output -join "`n") | ConvertFrom-Json
+                    if ($scenarioResult.ok -ne $true -or $scenarioResult.scenario_id -ne "minimal-sunlit") {
+                        $scenarioCheck.status = "failed"
+                        $scenarioCheck.exit_code = 1
+                        $scenarioCheck.output += "Scenario CLI JSON did not report the expected valid fixture."
+                    }
+                } catch {
+                    $scenarioCheck.status = "failed"
+                    $scenarioCheck.exit_code = 1
+                    $scenarioCheck.output += "Scenario CLI JSON could not be parsed."
+                }
+            }
+            $checks += $scenarioCheck
+            if ($checks[-1].status -eq "failed") {
+                ConvertTo-StatusJson (New-Summary -CommandName "verify" -Checks $checks -TestCount $testCount)
+                exit $checks[-1].exit_code
+            }
+
+            $invalidScenarioCheck = Invoke-Check -Name "expected invalid scenario fixture" -Action {
+                $invalidOutput = & node src/cli.mjs validate-scenario fixtures/scenarios/invalid/negative-energy.v1.json --json
+                $invalidCode = $LASTEXITCODE
+                $invalidOutput
+                if ($invalidCode -eq 1 -and (($invalidOutput -join "`n") -match "negative_integer")) {
+                    $global:LASTEXITCODE = 0
+                } else {
+                    "Expected invalid fixture to exit 1 with negative_integer, got $invalidCode."
+                    $global:LASTEXITCODE = 1
+                }
+            }
+            $checks += $invalidScenarioCheck
+            if ($checks[-1].status -eq "failed") {
+                ConvertTo-StatusJson (New-Summary -CommandName "verify" -Checks $checks -TestCount $testCount)
+                exit $checks[-1].exit_code
+            }
+
             ConvertTo-StatusJson (New-Summary -CommandName "verify" -Checks $checks -TestCount $testCount)
             exit 0
         }
         "help" {
             "Usage: .\eng.ps1 bootstrap | verify | help"
             "bootstrap: checks Git, PowerShell, Node.js 22+, and legacy-source documentation without installing dependencies or creating artifacts."
-            "verify: runs bootstrap, git diff --check, charter validation, clean-skeleton validation, node --test, and the deterministic status CLI."
+            "verify: runs bootstrap, git diff --check, charter validation, clean-skeleton validation, resource-scenario validation, node --test, status CLI, and representative scenario CLI checks."
             "No simulation, Bitcoin, AI, wallet, trading, network, hardware, or mission-authority behavior is verified or implemented."
             exit 0
         }

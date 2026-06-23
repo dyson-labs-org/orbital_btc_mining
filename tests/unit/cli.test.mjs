@@ -13,6 +13,8 @@ test("status --json emits only deterministic status JSON", () => {
   const parsed = JSON.parse(first);
   assert.equal(parsed.product_name, "Orbital Compute Lab");
   assert.equal(parsed.implementation_status, "skeleton");
+  assert.equal(parsed.capabilities.resource_scenario_contract, true);
+  assert.equal(parsed.capabilities.resource_scenario_validation, true);
   assert.equal(parsed.capabilities.simulation_kernel, false);
 });
 
@@ -21,6 +23,7 @@ test("status text and help do not overstate implementation", () => {
     encoding: "utf8"
   });
   assert.match(status, /simulation: not implemented/);
+  assert.match(status, /resource scenario contract: implemented/);
   assert.match(status, /bitcoin behavior: not implemented/);
   assert.match(status, /ai behavior: not implemented/);
 

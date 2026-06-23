@@ -12,12 +12,17 @@ const requiredFiles = [
   "src/index.mjs",
   "src/status.mjs",
   "src/cli.mjs",
+  "src/domain/resource-scenario.mjs",
   "tests/unit/status.test.mjs",
   "tests/unit/cli.test.mjs",
   "tests/unit/package-boundary.test.mjs",
+  "tests/unit/resource-scenario.test.mjs",
+  "tests/unit/resource-scenario-cli.test.mjs",
   "docs/legacy-removal-manifest.md",
   "docs/legacy-source-access.md",
-  "docs/architecture/ADR-0003-node-standard-library-skeleton.md"
+  "docs/architecture/ADR-0003-node-standard-library-skeleton.md",
+  "docs/architecture/ADR-0004-resource-scenario-contract.md",
+  "docs/simulation/resource-scenario-v1.md"
 ];
 
 const forbiddenActivePaths = [
@@ -225,6 +230,11 @@ if (status) {
     "hardware_control",
     "mission_authority"
   ];
+  for (const capability of ["resource_scenario_contract", "resource_scenario_validation"]) {
+    if (status.capabilities?.[capability] !== true) {
+      failures.push(`status capability must be true: ${capability}`);
+    }
+  }
   for (const capability of requiredFalseCapabilities) {
     if (status.capabilities?.[capability] !== false) {
       failures.push(`status capability must be false: ${capability}`);

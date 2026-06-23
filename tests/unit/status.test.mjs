@@ -15,9 +15,10 @@ test("status metadata is deterministic and honest", () => {
   assert.equal(statusJson(), statusJson());
 });
 
-test("all product capabilities remain false in I0.5", () => {
+test("only resource scenario capabilities are true in I1A", () => {
   const capabilities = getStatus().capabilities;
   for (const [name, value] of Object.entries(capabilities)) {
-    assert.equal(value, false, `${name} must be false in the skeleton`);
+    const expected = ["resource_scenario_contract", "resource_scenario_validation"].includes(name);
+    assert.equal(value, expected, `${name} capability mismatch`);
   }
 });

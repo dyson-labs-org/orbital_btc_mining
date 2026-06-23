@@ -40,8 +40,10 @@ test("eng verify surface remains offline and bounded", () => {
     "& git diff --check",
     "& node scripts/validate-incubation-charter.mjs",
     "& node scripts/validate-clean-skeleton.mjs",
+    "& node scripts/validate-resource-scenarios.mjs",
     "& node --test",
-    "& node src/cli.mjs status --json"
+    "& node src/cli.mjs status --json",
+    "& node src/cli.mjs validate-scenario fixtures/scenarios/minimal-sunlit.v1.json --json"
   ]);
   assert.doesNotMatch(
     eng,

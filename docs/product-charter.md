@@ -55,8 +55,15 @@ the legacy simulation is correct, safe to deploy, or ready for users.
 
 ## I0.5 Exit Criteria
 
-I0.5 remains pending until merged. The feature branch must preserve the legacy
-branch, remove legacy implementation from active main, add a dependency-free
-Node.js skeleton, verify offline on Windows and Ubuntu, retain audit and
-licensing uncertainty, record harness friction, and receive human review. It
-must not start I1.
+I0.5 is complete. It preserved the legacy branch, removed legacy implementation
+from active main, added a dependency-free Node.js skeleton, verified offline on
+Windows and Ubuntu, retained audit and licensing uncertainty, recorded harness
+friction, and received human review.
+
+## I1A Exit Criteria
+
+I1A remains pending until merged. It may define only a deterministic
+resource-scenario input contract, fixture validator, and CLI validation surface.
+It must not implement the simulation kernel, scheduler, Bitcoin workload, AI
+workload, telemetry, optimization, network behavior, provider behavior, wallet,
+trading, hardware control, or mission authority.

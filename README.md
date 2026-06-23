@@ -3,18 +3,20 @@
 Orbital Compute Lab is an incubation repository for offline, deterministic
 study of constrained orbital resource allocation concepts.
 
-Status: incubation skeleton.
+Status: incubation skeleton with a deterministic resource-scenario contract.
 
 The active product tree contains only dependency-free Node.js product metadata,
-an honest status CLI, validators, tests, and documentation. It does not
-implement a simulation kernel, scheduler, Bitcoin workload, AI workload, wallet,
-trading behavior, hosted AI behavior, network behavior, hardware control, or
-mission authority.
+an honest status CLI, a resource-scenario contract validator, tests, and
+documentation. It does not implement a simulation kernel, scheduler, Bitcoin
+workload, AI workload, wallet, trading behavior, hosted AI behavior, network
+behavior, hardware control, or mission authority.
 
 ## Current Status
 
-- Incubation stage: I0.5 Legacy Isolation and Clean Product Skeleton.
+- Incubation stage: I1A Deterministic Resource-Scenario Contract.
 - Product implementation: skeleton.
+- Harness evaluation cycle 1: `pass_with_findings`, pending merge.
+- Resource-scenario contract: implemented for deterministic input validation.
 - Legacy source: removed from active main and preserved on
   `legacy/pre-orbital-compute-lab`.
 - Preserved legacy SHA: `c93c7366edcd86b83896c3c39b753805183c3126`.
@@ -27,10 +29,14 @@ mission authority.
 ```powershell
 node src/cli.mjs status
 node src/cli.mjs status --json
+node src/cli.mjs validate-scenario fixtures/scenarios/minimal-sunlit.v1.json
+node src/cli.mjs validate-scenario fixtures/scenarios/minimal-sunlit.v1.json --json
 node src/cli.mjs help
 ```
 
-The CLI output is deterministic and reports all unimplemented capabilities as
+The CLI output is deterministic. It reports only the resource-scenario contract
+and validation capabilities as implemented; simulation, scheduler, Bitcoin, AI,
+wallet, trading, network, hardware, and mission-authority capabilities remain
 false.
 
 ## Verification
@@ -48,8 +54,10 @@ documentation. `verify` runs only:
 - `git diff --check`
 - `node scripts/validate-incubation-charter.mjs`
 - `node scripts/validate-clean-skeleton.mjs`
+- `node scripts/validate-resource-scenarios.mjs`
 - `node --test`
 - `node src/cli.mjs status --json`
+- representative valid and invalid `validate-scenario` CLI checks
 
 No `npm install`, `npm ci`, `pnpm`, `npx`, package build, server, legacy app,
 or external service is required.
@@ -76,6 +84,9 @@ See [docs/legacy-source-access.md](docs/legacy-source-access.md).
 - [Research assumptions](docs/research-assumptions.md)
 - [Verification plan](docs/verification-plan.md)
 - [Roadmap](docs/roadmap.md)
+- [Resource scenario v1](docs/simulation/resource-scenario-v1.md)
+- [Harness evaluation cycle 1 results](docs/incubation/evaluations/cycle-1-results.md)
 - [ADR-0001: Re-charter as Orbital Compute Lab](docs/architecture/ADR-0001-recharter-as-orbital-compute-lab.md)
 - [ADR-0002: Deterministic offline-first](docs/architecture/ADR-0002-deterministic-offline-first.md)
 - [ADR-0003: Node standard-library skeleton](docs/architecture/ADR-0003-node-standard-library-skeleton.md)
+- [ADR-0004: Resource Scenario Contract](docs/architecture/ADR-0004-resource-scenario-contract.md)

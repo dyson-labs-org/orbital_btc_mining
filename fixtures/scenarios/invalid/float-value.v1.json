@@ -1,0 +1,22 @@
+{
+  "schema_version": "resource-scenario.v1",
+  "scenario_id": "float-value",
+  "step_duration_ms": 1000,
+  "step_count": 1,
+  "initial_state": {
+    "battery_energy_millijoules": 1000.5,
+    "battery_capacity_millijoules": 2000,
+    "thermal_load_millijoules": 100,
+    "thermal_capacity_millijoules": 500
+  },
+  "environment_steps": [
+    {
+      "step": 0,
+      "solar_input_millijoules": 300,
+      "base_load_millijoules": 200,
+      "thermal_input_millijoules": 20,
+      "thermal_dissipation_millijoules": 10,
+      "communications_available": false
+    }
+  ]
+}
