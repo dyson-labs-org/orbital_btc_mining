@@ -15,3 +15,10 @@ Allowed I0 commands:
 - `git diff --check`
 
 Legacy commands remain `not_run`.
+
+## I0.5
+
+I0.5 adds `.agent-harness/tasks/i0.5-clean-product-skeleton.task.json`.
+Generated I0.5 evidence belongs under ignored `.agent-harness/artifacts/i0.5/`.
+No `.agent-harness/project.json` is created because no reviewed incubation
+project schema is available.

@@ -1,0 +1,67 @@
+{
+  "schema_version": "1.0",
+  "task_id": "orbital-compute-lab-i0.5-clean-product-skeleton",
+  "title": "I0.5 legacy isolation and clean product skeleton",
+  "repository": "dyson-labs-org/orbital_btc_mining",
+  "acceptance_criteria": [
+    "I0 main SHA 3c2649e51a23aa408a4e7aee9192fd47e327bad6 is recorded",
+    "legacy/pre-orbital-compute-lab remains at c93c7366edcd86b83896c3c39b753805183c3126",
+    "approved legacy deletion plan is applied with every removed path recoverable from the legacy branch",
+    "active product tree contains dependency-free Node.js 22+ ESM skeleton",
+    "status CLI reports implementation_status skeleton and all unimplemented capabilities false",
+    "canonical verification installs nothing and contacts no external service",
+    "no simulation, Bitcoin, AI, wallet, trading, hardware, or mission-authority behavior is implemented",
+    "Windows and Ubuntu CI use ./eng.ps1 verify",
+    "draft pull request remains unmerged"
+  ],
+  "i0_main_sha": "3c2649e51a23aa408a4e7aee9192fd47e327bad6",
+  "harness_main_sha": "98ab35022e605849d1d0525d591d730069e49411",
+  "legacy_branch": "legacy/pre-orbital-compute-lab",
+  "legacy_branch_sha": "c93c7366edcd86b83896c3c39b753805183c3126",
+  "goal": "Remove legacy implementation from active main and establish an offline dependency-free product skeleton.",
+  "authorized_deletion_scope": [
+    "legacy Python Flask application",
+    "legacy Python model and plotting source",
+    "legacy Google Sheets and email helpers",
+    "legacy deployment metadata",
+    "legacy dependency metadata",
+    "legacy conflicted license file"
+  ],
+  "non_goals": [
+    "simulation kernel",
+    "scheduler",
+    "Bitcoin workload",
+    "AI workload",
+    "wallet",
+    "trading",
+    "hardware control",
+    "mission planning",
+    "dependency installation",
+    "external service contact",
+    "merge"
+  ],
+  "required_verification": [
+    ".\\eng.ps1 bootstrap",
+    ".\\eng.ps1 verify",
+    "node scripts/validate-incubation-charter.mjs",
+    "node scripts/validate-clean-skeleton.mjs",
+    "node --test",
+    "node src/cli.mjs status",
+    "node src/cli.mjs status --json",
+    "git diff --check"
+  ],
+  "required_review": [
+    "deletion-plan reviewer before deletion",
+    "final independent reviewer before push"
+  ],
+  "safety_boundaries": [
+    "legacy source preserved_not_executed",
+    "dependency installation not_required",
+    "external service calls none",
+    "product behavior metadata/status only"
+  ],
+  "recovery_procedure": "Use git show legacy/pre-orbital-compute-lab:<path> to inspect preserved legacy source read-only.",
+  "no_product_behavior_boundary": "The active skeleton exposes metadata and status only.",
+  "no_network_boundary": "Active source imports no network modules and verification performs no endpoint calls.",
+  "no_merge_boundary": "The pull request must remain draft and unmerged for human review."
+}
