@@ -14,7 +14,7 @@ test("charter validator passes", () => {
   assert.equal(summary.charter_status, "incubation");
   assert.equal(summary.legacy_source, "not_run");
   assert.equal(summary.external_calls, "none");
-  assert.equal(summary.product_implementation, "not_started");
+  assert.equal(summary.product_implementation, "skeleton");
 });
 
 test("task contract records incubation status and project-json gap", () => {
@@ -35,13 +35,17 @@ test("eng verify surface remains offline and bounded", () => {
     .map((line) => line.trim())
     .filter((line) => line.startsWith("& "));
   assert.deepEqual(invocationLines, [
+    "& git --version",
+    "& node --version",
     "& git diff --check",
     "& node scripts/validate-incubation-charter.mjs",
-    "& node --test tests/incubation-charter.test.mjs"
+    "& node scripts/validate-clean-skeleton.mjs",
+    "& node --test",
+    "& node src/cli.mjs status --json"
   ]);
   assert.doesNotMatch(
     eng,
-    /pip install|npm install|pnpm|npx|gunicorn|flask run|python (?:app|main)\.py|Invoke-WebRequest|Invoke-RestMethod|curl |wget|git push|git fetch|git pull|git clone|git add|git commit|Remove-Item|Set-Content|New-Item|Out-File|Tee-Object|Start-Process/
+    /pip install|npm install|npm ci|pnpm|npx|gunicorn|flask run|python (?:app|main)\.py|Invoke-Expression|Invoke-WebRequest|Invoke-RestMethod|curl |wget|git push|git fetch|git pull|git clone|git add|git commit|Remove-Item|Set-Content|New-Item|Out-File|Tee-Object|Start-Process/
   );
 });
 

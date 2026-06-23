@@ -1,0 +1,16 @@
+{
+  "name": "orbital-compute-lab",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "status": "node src/cli.mjs status",
+    "test": "node --test",
+    "validate:charter": "node scripts/validate-incubation-charter.mjs",
+    "validate:skeleton": "node scripts/validate-clean-skeleton.mjs",
+    "verify": "node scripts/validate-clean-skeleton.mjs"
+  }
+}

@@ -21,7 +21,11 @@ const requiredFiles = [
   "docs/roadmap.md",
   "docs/architecture/ADR-0001-recharter-as-orbital-compute-lab.md",
   "docs/architecture/ADR-0002-deterministic-offline-first.md",
+  "docs/architecture/ADR-0003-node-standard-library-skeleton.md",
+  "docs/legacy-removal-manifest.md",
+  "docs/legacy-source-access.md",
   "scripts/validate-incubation-charter.mjs",
+  "scripts/validate-clean-skeleton.mjs",
   "tests/incubation-charter.test.mjs"
 ];
 
@@ -31,8 +35,9 @@ const requiredText = {
     "incubation",
     "legacy/pre-orbital-compute-lab",
     "c93c7366edcd86b83896c3c39b753805183c3126",
-    "Product implementation: not_started",
-    "Legacy application commands: not_run",
+    "Product implementation: skeleton",
+    "Status: incubation skeleton",
+    "Legacy source: removed from active main",
     "External service calls during verification: none"
   ],
   "docs/product-charter.md": [
@@ -65,7 +70,7 @@ const requiredText = {
   "docs/verification-plan.md": [
     "git diff --check",
     "node scripts/validate-incubation-charter.mjs",
-    "node --test tests/incubation-charter.test.mjs",
+    "node --test",
     "not_run",
     "empty",
     "noop"
@@ -77,6 +82,7 @@ const requiredText = {
     "I3 - Explainability/Telemetry",
     "I4 - Optional Local AI Advisor Evaluation",
     "I5 - Incubation Demonstrator",
+    "I0.5",
     "1.0 Decision Gate"
   ]
 };
@@ -109,9 +115,13 @@ const forbiddenEngText = [
 ];
 
 const allowedEngInvocations = new Set([
+  "& git --version",
+  "& node --version",
   "& git diff --check",
   "& node scripts/validate-incubation-charter.mjs",
-  "& node --test tests/incubation-charter.test.mjs"
+  "& node scripts/validate-clean-skeleton.mjs",
+  "& node --test",
+  "& node src/cli.mjs status --json"
 ]);
 
 const baselineSha = "c93c7366edcd86b83896c3c39b753805183c3126";
@@ -239,7 +249,7 @@ const summary = {
   charter_status: "incubation",
   legacy_source: "not_run",
   external_calls: "none",
-  product_implementation: "not_started",
+  product_implementation: "skeleton",
   failures
 };
 

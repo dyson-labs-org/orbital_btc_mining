@@ -64,6 +64,10 @@ does not alter the file because this milestone is an audit/re-charter step with
 no legacy cleanup. A future reviewed cleanup must resolve the license file before
 any operational or distribution claim.
 
+I0.5 removed the conflicted `LICENSE` file from active main. The licensing
+uncertainty remains applicable to the preserved legacy source and is not
+resolved by removal from the active product skeleton.
+
 ## gf-sdk Duplication Assessment
 
 Status: passed for static comparison.
@@ -98,8 +102,7 @@ I0 advances only the audit/re-charter gate for an incubation repository. It does
 
 ## Open Follow-Ups
 
-- Resolve or replace the conflicted `LICENSE` file.
+- Resolve licensing before any distribution or reuse of preserved legacy source.
 - Decide how to handle historical personal-data filenames.
-- Quarantine or replace legacy external-service scripts.
 - Replace legacy app assumptions with deterministic offline simulation fixtures.
 - Add model validation data before any technical performance claim.

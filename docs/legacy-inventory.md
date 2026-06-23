@@ -59,7 +59,9 @@ configuration.
 
 ## Legacy Source Status
 
-Legacy source remains present and unmodified by I0 except for new documentation,
-harness files, and ignored artifact directories. It is retained for auditability
-until a future reviewed milestone decides whether to replace, quarantine, or
-remove it.
+I0.5 removes legacy implementation source from active main after reviewed
+deletion planning. The source remains available on
+`legacy/pre-orbital-compute-lab` at
+`c93c7366edcd86b83896c3c39b753805183c3126`. See
+[legacy-removal-manifest.md](legacy-removal-manifest.md) and
+[legacy-source-access.md](legacy-source-access.md).

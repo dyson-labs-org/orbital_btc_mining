@@ -5,15 +5,40 @@ imply operational readiness.
 
 ## I0 - Audit/Re-charter
 
-Status: in_progress for this milestone.
+Status: merged.
 
-Outcome: preserve the legacy baseline, document risks, define the product
-charter, add safety boundaries, establish harness verification, and keep legacy
-runtime commands `not_run`.
+Outcome: preserved the legacy baseline, documented risks, defined the product
+charter, added safety boundaries, established harness verification, and kept
+legacy runtime commands `not_run`.
 
-Exit gate: local charter validator and harness checks pass.
+Exit gate: local charter validator and harness checks passed before merge.
+
+## I0.5 - Legacy Isolation and Clean Product Skeleton
+
+Status: in_progress_pending_merge.
+
+Outcome: remove legacy implementation from active main while preserving it on
+`legacy/pre-orbital-compute-lab`, add a dependency-free Node.js skeleton, expose
+an honest deterministic status CLI, and verify offline on Windows and Ubuntu.
+
+Exit criteria:
+
+- legacy source preserved by immutable branch reference;
+- legacy implementation absent from active product tree;
+- clean dependency-free package skeleton;
+- deterministic status CLI;
+- offline Windows and Ubuntu verification;
+- no external service;
+- no product behavior beyond metadata/status;
+- independent large-deletion review;
+- CI passing;
+- human approval and merge.
+
+I0.5 must not be marked complete before merge.
 
 ## I1 - Deterministic Simulation Kernel
+
+Status: not_started.
 
 Outcome: introduce a minimal offline simulation kernel with deterministic input
 fixtures, expected outputs, and uncertainty notes.
@@ -22,12 +47,16 @@ Exit gate: repeatable tests verify kernel behavior without external calls.
 
 ## I2 - Workload/Scheduler
 
+Status: not_started.
+
 Outcome: model workload windows, power limits, thermal limits, and scheduling
 decisions without provider integrations.
 
 Exit gate: scheduler fixtures cover nominal, constrained, and infeasible cases.
 
 ## I3 - Explainability/Telemetry
+
+Status: not_started.
 
 Outcome: produce explainable traces for assumptions, intermediate values,
 warnings, and confidence limits.
@@ -37,6 +66,8 @@ steps.
 
 ## I4 - Optional Local AI Advisor Evaluation
 
+Status: not_started.
+
 Outcome: evaluate whether a local-only advisor can summarize assumptions and
 risks without changing source-of-truth calculations.
 
@@ -44,6 +75,8 @@ Exit gate: advisor is optional, offline, reproducible, and never required for
 verification.
 
 ## I5 - Incubation Demonstrator
+
+Status: not_started.
 
 Outcome: assemble the kernel, scheduler, and telemetry into an offline demo that
 shows the concept without deployment, mining, payments, or live services.
@@ -53,6 +86,8 @@ non-operational labeling.
 
 ## 1.0 Decision Gate
 
+Status: not_started.
+
 Outcome: decide whether to continue, archive, or re-scope the lab.
 
 Required before 1.0:
@@ -61,5 +96,5 @@ Required before 1.0:
 - Privacy history review.
 - Reviewed model assumptions and fixtures.
 - Active maintenance owner.
-- Security review of any retained legacy code.
+- Security review of any retained or recovered legacy code.
 - Decision on whether any operational pilot is appropriate.
