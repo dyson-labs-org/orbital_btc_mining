@@ -1,0 +1,15 @@
+{
+  "schema_version": "scenario-suite.v1",
+  "suite_id": "duplicate-constraint-code",
+  "cases": [
+    {
+      "case_id": "energy",
+      "scenario_path": "fixtures/runs/energy-deficit.v1.json",
+      "expected_outcome": "constraint_violation",
+      "expected_constraint_codes": [
+        "ENERGY_DEFICIT",
+        "ENERGY_DEFICIT"
+      ]
+    }
+  ]
+}

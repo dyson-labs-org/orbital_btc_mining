@@ -17,3 +17,6 @@
   preregistration.
 - Record harness evaluation cycle 2 as `pass_with_findings`, with product
   behavior separated from harness integrity and evidence-packaging findings.
+- Add the I1C `scenario-suite.v1` contract, deterministic suite runner, suite
+  fixtures, CLI run-suite command, canonical verification checks, and Cycle 3
+  preregistration.

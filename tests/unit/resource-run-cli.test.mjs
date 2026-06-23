@@ -105,6 +105,8 @@ test("status capability honesty", () => {
   assert.equal(status.capabilities.resource_scenario_contract, true);
   assert.equal(status.capabilities.resource_scenario_validation, true);
   assert.equal(status.capabilities.deterministic_resource_transition, true);
+  assert.equal(status.capabilities.scenario_suite_contract, true);
+  assert.equal(status.capabilities.scenario_suite_runner, true);
   assert.equal(status.capabilities.workload_scheduler, false);
   assert.equal(status.capabilities.bitcoin_workload_model, false);
   assert.equal(status.capabilities.ai_workload_model, false);

@@ -60,7 +60,7 @@ and no provider or adapter requirement.
 
 ### I1B - Deterministic Resource Transitions
 
-Status: in_progress_pending_merge.
+Status: complete.
 
 Outcome: run validated `resource-scenario.v1` inputs through deterministic
 electrical and thermal resource transitions with typed `completed` and
@@ -75,6 +75,25 @@ Exit gate: local verification and harness evidence show deterministic transition
 results, domain-negative outcomes distinct from process failures, redaction,
 tamper, stale-binding, reproducibility, candidate-lifecycle, and review-packet
 checks without dependencies, provider, adapter, or network requirement.
+
+### I1C - Deterministic Scenario Suites
+
+Status: in_progress_pending_merge.
+
+Outcome: define `scenario-suite.v1` and a deterministic runner that executes
+existing resource-transition scenarios in declared order and compares domain
+outcomes with explicit expectations.
+
+Boundary: I1C does not implement the full simulation kernel, scheduler, Bitcoin
+workloads, AI workloads, profitability, optimization, telemetry, orbital
+propagation, wallet behavior, network behavior, provider behavior, hardware
+control, or mission authority.
+
+Exit gate: local verification and harness evidence show deterministic suite
+execution, expected constraint outcomes, expectation-mismatch failures,
+integrity validation, relocation, tamper and missing-artifact detection,
+target-mutation detection, review-bundle validation, and stale-binding checks
+without dependencies, provider, adapter, KB, or network requirement.
 
 ## I2 - Workload/Scheduler
 

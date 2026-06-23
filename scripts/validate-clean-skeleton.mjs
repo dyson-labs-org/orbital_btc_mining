@@ -14,6 +14,7 @@ const requiredFiles = [
   "src/cli.mjs",
   "src/domain/resource-scenario.mjs",
   "src/domain/resource-transition.mjs",
+  "src/domain/scenario-suite.mjs",
   "tests/unit/status.test.mjs",
   "tests/unit/cli.test.mjs",
   "tests/unit/package-boundary.test.mjs",
@@ -21,13 +22,18 @@ const requiredFiles = [
   "tests/unit/resource-scenario-cli.test.mjs",
   "tests/unit/resource-transition.test.mjs",
   "tests/unit/resource-run-cli.test.mjs",
+  "tests/unit/scenario-suite.test.mjs",
+  "tests/unit/scenario-suite-cli.test.mjs",
   "docs/legacy-removal-manifest.md",
   "docs/legacy-source-access.md",
   "docs/architecture/ADR-0003-node-standard-library-skeleton.md",
   "docs/architecture/ADR-0004-resource-scenario-contract.md",
   "docs/architecture/ADR-0005-deterministic-resource-transitions.md",
+  "docs/architecture/ADR-0006-deterministic-scenario-suites.md",
   "docs/simulation/resource-scenario-v1.md",
-  "docs/simulation/resource-transition-v1.md"
+  "docs/simulation/resource-transition-v1.md",
+  "docs/simulation/scenario-suite-v1.md",
+  "scripts/validate-scenario-suites.mjs"
 ];
 
 const forbiddenActivePaths = [
@@ -237,7 +243,7 @@ if (status) {
     "hardware_control",
     "mission_authority"
   ];
-  for (const capability of ["resource_scenario_contract", "resource_scenario_validation", "deterministic_resource_transition"]) {
+  for (const capability of ["resource_scenario_contract", "resource_scenario_validation", "deterministic_resource_transition", "scenario_suite_contract", "scenario_suite_runner"]) {
     if (status.capabilities?.[capability] !== true) {
       failures.push(`status capability must be true: ${capability}`);
     }

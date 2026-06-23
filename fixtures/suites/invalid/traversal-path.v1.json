@@ -1,0 +1,11 @@
+{
+  "schema_version": "scenario-suite.v1",
+  "suite_id": "traversal-path",
+  "cases": [
+    {
+      "case_id": "traversal",
+      "scenario_path": "fixtures/runs/../runs/nominal-resource-run.v1.json",
+      "expected_outcome": "completed"
+    }
+  ]
+}

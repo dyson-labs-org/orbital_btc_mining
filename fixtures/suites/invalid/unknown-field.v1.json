@@ -1,0 +1,12 @@
+{
+  "schema_version": "scenario-suite.v1",
+  "suite_id": "unknown-field",
+  "cases": [
+    {
+      "case_id": "nominal",
+      "scenario_path": "fixtures/runs/nominal-resource-run.v1.json",
+      "expected_outcome": "completed",
+      "unexpected": true
+    }
+  ]
+}

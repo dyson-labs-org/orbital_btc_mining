@@ -1,0 +1,11 @@
+{
+  "schema_version": "scenario-suite.v1",
+  "suite_id": "missing-scenario",
+  "cases": [
+    {
+      "case_id": "missing",
+      "scenario_path": "fixtures/runs/missing-resource-run.v1.json",
+      "expected_outcome": "completed"
+    }
+  ]
+}

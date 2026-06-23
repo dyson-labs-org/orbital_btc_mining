@@ -15,13 +15,15 @@ test("status metadata is deterministic and honest", () => {
   assert.equal(statusJson(), statusJson());
 });
 
-test("only resource scenario and deterministic transition capabilities are true in I1B", () => {
+test("only resource and scenario-suite capabilities are true in I1C", () => {
   const capabilities = getStatus().capabilities;
   for (const [name, value] of Object.entries(capabilities)) {
     const expected = [
       "resource_scenario_contract",
       "resource_scenario_validation",
-      "deterministic_resource_transition"
+      "deterministic_resource_transition",
+      "scenario_suite_contract",
+      "scenario_suite_runner"
     ].includes(name);
     assert.equal(value, expected, `${name} capability mismatch`);
   }

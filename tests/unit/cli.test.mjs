@@ -16,6 +16,8 @@ test("status --json emits only deterministic status JSON", () => {
   assert.equal(parsed.capabilities.resource_scenario_contract, true);
   assert.equal(parsed.capabilities.resource_scenario_validation, true);
   assert.equal(parsed.capabilities.deterministic_resource_transition, true);
+  assert.equal(parsed.capabilities.scenario_suite_contract, true);
+  assert.equal(parsed.capabilities.scenario_suite_runner, true);
   assert.equal(parsed.capabilities.simulation_kernel, false);
   assert.equal(parsed.capabilities.workload_scheduler, false);
 });
@@ -27,6 +29,7 @@ test("status text and help do not overstate implementation", () => {
   assert.match(status, /simulation: not implemented/);
   assert.match(status, /resource scenario contract: implemented/);
   assert.match(status, /deterministic resource transition: implemented/);
+  assert.match(status, /scenario suite runner: implemented/);
   assert.match(status, /scheduler: not implemented/);
   assert.match(status, /bitcoin behavior: not implemented/);
   assert.match(status, /ai behavior: not implemented/);

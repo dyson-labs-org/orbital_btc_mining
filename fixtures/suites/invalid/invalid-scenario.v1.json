@@ -1,0 +1,11 @@
+{
+  "schema_version": "scenario-suite.v1",
+  "suite_id": "invalid-scenario",
+  "cases": [
+    {
+      "case_id": "invalid",
+      "scenario_path": "fixtures/runs/invalid/invalid-resource-scenario.v1.json",
+      "expected_outcome": "completed"
+    }
+  ]
+}
