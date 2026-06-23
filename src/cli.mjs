@@ -3,6 +3,10 @@ import {
   scenarioValidationPayload,
   validateScenarioDocument
 } from "./domain/resource-scenario.mjs";
+import {
+  runScenarioDocument,
+  transitionResultPayload
+} from "./domain/resource-transition.mjs";
 import { productStatus, statusJson } from "./status.mjs";
 
 const args = process.argv.slice(2);
@@ -17,9 +21,11 @@ function writeHelp() {
       "  status --json                  Print the status object as JSON.",
       "  validate-scenario <path>       Validate a resource-scenario.v1 file.",
       "  validate-scenario <path> --json Print validation as deterministic JSON.",
+      "  run-scenario <path>            Run deterministic resource transitions.",
+      "  run-scenario <path> --json     Print transition result as deterministic JSON.",
       "  help                           Print this help.",
       "",
-      "No simulation kernel, scheduler, Bitcoin workload, AI workload, wallet,",
+      "No simulation kernel, workload scheduler, Bitcoin workload, AI workload, wallet,",
       "trading, external network, hardware, or mission-authority behavior is implemented."
     ].join("\n") + "\n"
   );
@@ -31,6 +37,9 @@ function writeStatusText() {
   process.stdout.write(`maturity: ${productStatus.maturity}\n`);
   process.stdout.write("simulation: not implemented\n");
   process.stdout.write("resource scenario contract: implemented\n");
+  process.stdout.write("resource scenario validation: implemented\n");
+  process.stdout.write("deterministic resource transition: implemented\n");
+  process.stdout.write("scheduler: not implemented\n");
   process.stdout.write("bitcoin behavior: not implemented\n");
   process.stdout.write("ai behavior: not implemented\n");
   process.stdout.write("external network: none\n");
@@ -57,7 +66,11 @@ function writeValidationJson(result) {
   process.stdout.write(`${JSON.stringify(scenarioValidationPayload(result), null, 2)}\n`);
 }
 
-function writeValidationErrors(errors) {
+function writeTransitionJson(result) {
+  process.stdout.write(`${JSON.stringify(transitionResultPayload(result), null, 2)}\n`);
+}
+
+function writeErrors(errors) {
   for (const item of errors) {
     process.stderr.write(`${item.code} ${item.path}: ${item.message}\n`);
   }
@@ -81,7 +94,7 @@ function validateScenario(argv) {
     if (json) {
       writeValidationJson(result);
     } else {
-      writeValidationErrors(result.errors);
+      writeErrors(result.errors);
     }
     return 1;
   }
@@ -92,11 +105,49 @@ function validateScenario(argv) {
     return result.ok ? 0 : 1;
   }
   if (!result.ok) {
-    writeValidationErrors(result.errors);
+    writeErrors(result.errors);
     return 1;
   }
   process.stdout.write(`valid resource scenario: ${result.scenario.scenario_id}\n`);
   return 0;
+}
+
+function runScenario(argv) {
+  const [scenarioPath, option, extra] = argv;
+  if (!scenarioPath) {
+    process.stderr.write("Missing scenario path. Use `run-scenario <path>` or `run-scenario <path> --json`.\n");
+    return 2;
+  }
+  if (extra || (option && option !== "--json")) {
+    process.stderr.write("Unknown run-scenario option. Use `run-scenario <path>` or `run-scenario <path> --json`.\n");
+    return 2;
+  }
+
+  const json = option === "--json";
+  const read = readScenario(scenarioPath);
+  if (!read.ok) {
+    const result = { ok: false, process_status: "invalid_input", result: null, errors: read.errors };
+    if (json) {
+      writeTransitionJson(result);
+    } else {
+      writeErrors(result.errors);
+    }
+    return 1;
+  }
+
+  const result = runScenarioDocument(read.text);
+  if (json) {
+    writeTransitionJson(result);
+  } else if (!result.ok) {
+    writeErrors(result.errors);
+  } else {
+    process.stdout.write(`${result.result.outcome} resource scenario: ${result.result.scenario_id}\n`);
+  }
+
+  if (result.ok) {
+    return 0;
+  }
+  return result.process_status === "internal_error" ? 3 : 1;
 }
 
 function main(argv) {
@@ -122,6 +173,10 @@ function main(argv) {
 
   if (command === "validate-scenario") {
     return validateScenario(argv.slice(1));
+  }
+
+  if (command === "run-scenario") {
+    return runScenario(argv.slice(1));
   }
 
   process.stderr.write(`Unknown command: ${command}\n`);

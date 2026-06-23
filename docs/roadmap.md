@@ -45,7 +45,7 @@ Exit gate: repeatable tests verify kernel behavior without external calls.
 
 ### I1A - Deterministic Resource-Scenario Contract
 
-Status: in_progress_pending_merge.
+Status: complete.
 
 Outcome: define `resource-scenario.v1`, deterministic fixture validation, and a
 CLI validation surface for future simulation inputs.
@@ -57,6 +57,24 @@ behavior, network behavior, hardware control, or mission authority.
 Exit gate: local verification and review packet evidence show deterministic
 validation, honest status metadata, expected-negative fixtures, no dependencies,
 and no provider or adapter requirement.
+
+### I1B - Deterministic Resource Transitions
+
+Status: in_progress_pending_merge.
+
+Outcome: run validated `resource-scenario.v1` inputs through deterministic
+electrical and thermal resource transitions with typed `completed` and
+`constraint_violation` domain outcomes.
+
+Boundary: I1B does not implement the full simulation kernel, scheduler, Bitcoin
+workloads, AI workloads, profitability, optimization, telemetry, orbital
+propagation, wallet behavior, network behavior, provider behavior, hardware
+control, or mission authority.
+
+Exit gate: local verification and harness evidence show deterministic transition
+results, domain-negative outcomes distinct from process failures, redaction,
+tamper, stale-binding, reproducibility, candidate-lifecycle, and review-packet
+checks without dependencies, provider, adapter, or network requirement.
 
 ## I2 - Workload/Scheduler
 

@@ -1,6 +1,6 @@
 # Verification Plan
 
-## I0.5/I1A Verification Contract
+## I0.5/I1A/I1B Verification Contract
 
 `.\eng.ps1 bootstrap` must:
 
@@ -20,10 +20,14 @@
 - `node scripts/validate-incubation-charter.mjs`;
 - `node scripts/validate-clean-skeleton.mjs`;
 - `node scripts/validate-resource-scenarios.mjs`;
+- `node scripts/validate-resource-transitions.mjs`;
 - `node --test`;
 - `node src/cli.mjs status --json`.
 - representative valid and invalid `node src/cli.mjs validate-scenario`
-  checks.
+  checks;
+- representative nominal, constraint, and expected-invalid `run-scenario`
+  checks;
+- deterministic JSON hash comparison for resource transitions.
 
 The wrapper must report:
 
@@ -38,7 +42,11 @@ The wrapper must report:
 - resource-scenario contract: `passed` when checked;
 - resource-scenario fixtures: `passed` when checked;
 - expected negative scenario tests: `passed` when the invalid fixture is
-  rejected with the expected nonzero exit.
+  rejected with the expected nonzero exit;
+- resource-transition validation: `passed` when nominal and constraint fixtures
+  produce the expected domain outcomes;
+- expected invalid transition tests: `passed` when malformed or overflow inputs
+  produce the expected nonzero process status.
 
 ## Status Vocabulary
 
@@ -59,6 +67,8 @@ The wrapper must report:
 - CLI status output.
 - Resource-scenario fixture validation.
 - CLI scenario-validation output for valid and expected-invalid fixtures.
+- CLI resource-transition output for nominal, constraint, and expected-invalid
+  fixtures.
 - `git diff --check` result.
 - Deletion-plan and recovery evidence.
 - Redacted boundary scans.
@@ -66,7 +76,7 @@ The wrapper must report:
 Generated evidence belongs under ignored artifact directories such as
 `.agent-harness/artifacts/` or `audit-output/`.
 
-## Out-Of-Scope Checks For I0.5/I1A
+## Out-Of-Scope Checks For I0.5/I1A/I1B
 
 - Legacy source execution.
 - Python dependency installation.

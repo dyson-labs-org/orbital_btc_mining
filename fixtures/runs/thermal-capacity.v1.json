@@ -1,0 +1,23 @@
+{
+  "schema_version": "resource-scenario.v1",
+  "scenario_id": "thermal-capacity",
+  "step_duration_ms": 1000,
+  "step_count": 1,
+  "initial_state": {
+    "battery_energy_millijoules": 100,
+    "battery_capacity_millijoules": 200,
+    "thermal_load_millijoules": 90,
+    "thermal_capacity_millijoules": 100
+  },
+  "environment_steps": [
+    {
+      "step": 0,
+      "solar_input_millijoules": 10,
+      "base_load_millijoules": 10,
+      "thermal_input_millijoules": 20,
+      "thermal_dissipation_millijoules": 0,
+      "communications_available": true,
+      "downlink_capacity_bytes": 256
+    }
+  ]
+}

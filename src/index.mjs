@@ -5,3 +5,8 @@ export {
   validateResourceScenario,
   validateScenarioDocument
 } from "./domain/resource-scenario.mjs";
+export {
+  runResourceScenario,
+  runScenarioDocument,
+  transitionResultPayload
+} from "./domain/resource-transition.mjs";

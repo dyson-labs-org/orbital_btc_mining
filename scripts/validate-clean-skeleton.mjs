@@ -13,16 +13,21 @@ const requiredFiles = [
   "src/status.mjs",
   "src/cli.mjs",
   "src/domain/resource-scenario.mjs",
+  "src/domain/resource-transition.mjs",
   "tests/unit/status.test.mjs",
   "tests/unit/cli.test.mjs",
   "tests/unit/package-boundary.test.mjs",
   "tests/unit/resource-scenario.test.mjs",
   "tests/unit/resource-scenario-cli.test.mjs",
+  "tests/unit/resource-transition.test.mjs",
+  "tests/unit/resource-run-cli.test.mjs",
   "docs/legacy-removal-manifest.md",
   "docs/legacy-source-access.md",
   "docs/architecture/ADR-0003-node-standard-library-skeleton.md",
   "docs/architecture/ADR-0004-resource-scenario-contract.md",
-  "docs/simulation/resource-scenario-v1.md"
+  "docs/architecture/ADR-0005-deterministic-resource-transitions.md",
+  "docs/simulation/resource-scenario-v1.md",
+  "docs/simulation/resource-transition-v1.md"
 ];
 
 const forbiddenActivePaths = [
@@ -219,7 +224,9 @@ if (status) {
     "orbital_resource_model",
     "bitcoin_workload_model",
     "ai_workload_model",
+    "workload_scheduler",
     "scheduler",
+    "profitability_model",
     "telemetry",
     "anomaly_detection",
     "live_bitcoin",
@@ -230,7 +237,7 @@ if (status) {
     "hardware_control",
     "mission_authority"
   ];
-  for (const capability of ["resource_scenario_contract", "resource_scenario_validation"]) {
+  for (const capability of ["resource_scenario_contract", "resource_scenario_validation", "deterministic_resource_transition"]) {
     if (status.capabilities?.[capability] !== true) {
       failures.push(`status capability must be true: ${capability}`);
     }

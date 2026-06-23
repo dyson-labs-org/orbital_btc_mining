@@ -121,9 +121,13 @@ const allowedEngInvocations = new Set([
   "& node scripts/validate-incubation-charter.mjs",
   "& node scripts/validate-clean-skeleton.mjs",
   "& node scripts/validate-resource-scenarios.mjs",
+  "& node scripts/validate-resource-transitions.mjs",
   "& node --test",
   "& node src/cli.mjs status --json",
-  "& node src/cli.mjs validate-scenario fixtures/scenarios/minimal-sunlit.v1.json --json"
+  "& node src/cli.mjs validate-scenario fixtures/scenarios/minimal-sunlit.v1.json --json",
+  "& node src/cli.mjs run-scenario fixtures/runs/nominal-resource-run.v1.json --json",
+  "& node src/cli.mjs run-scenario fixtures/runs/energy-deficit.v1.json --json",
+  "& node src/cli.mjs run-scenario fixtures/scenarios/invalid/malformed-json.v1.json --json"
 ]);
 
 const baselineSha = "c93c7366edcd86b83896c3c39b753805183c3126";

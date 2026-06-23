@@ -12,10 +12,13 @@ export const productStatus = Object.freeze({
   capabilities: Object.freeze({
     resource_scenario_contract: true,
     resource_scenario_validation: true,
+    deterministic_resource_transition: true,
     simulation_kernel: false,
     orbital_resource_model: false,
+    workload_scheduler: false,
     bitcoin_workload_model: false,
     ai_workload_model: false,
+    profitability_model: false,
     scheduler: false,
     telemetry: false,
     anomaly_detection: false,

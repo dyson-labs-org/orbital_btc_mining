@@ -33,7 +33,8 @@ provider integration is considered.
 - No Render, Flask, Google Sheets, email, or provider deployment work.
 - No package installation or dependency update in I0.
 - No simulation kernel, scheduler, Bitcoin workload, AI workload, wallet,
-  trading, hardware control, or mission-authority behavior in I0.5.
+  trading, hardware control, or mission-authority behavior in I0.5, I1A, or
+  I1B.
 
 ## Product Principles
 
@@ -62,8 +63,17 @@ friction, and received human review.
 
 ## I1A Exit Criteria
 
-I1A remains pending until merged. It may define only a deterministic
-resource-scenario input contract, fixture validator, and CLI validation surface.
-It must not implement the simulation kernel, scheduler, Bitcoin workload, AI
-workload, telemetry, optimization, network behavior, provider behavior, wallet,
-trading, hardware control, or mission authority.
+I1A is complete. It defines only a deterministic resource-scenario input
+contract, fixture validator, and CLI validation surface. It does not implement
+the simulation kernel, scheduler, Bitcoin workload, AI workload, telemetry,
+optimization, network behavior, provider behavior, wallet, trading, hardware
+control, or mission authority.
+
+## I1B Exit Criteria
+
+I1B remains pending until merged. It may define only deterministic resource
+transitions over validated `resource-scenario.v1` inputs and typed domain
+outcomes for `completed` and `constraint_violation`. It must not implement the
+simulation kernel, scheduler, Bitcoin workload, AI workload, profitability,
+optimization, network behavior, provider behavior, wallet, trading, hardware
+control, telemetry, or mission authority.
