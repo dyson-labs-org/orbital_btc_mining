@@ -82,7 +82,7 @@ const requiredText = {
     "Cycle 1",
     "Cycle 2",
     "Cycle 3",
-    "C3-HARNESS-004 remains open / `not_run`"
+    "C3-HARNESS-004 remains `open / accepted_for_offline_v0.2`"
   ],
   ".agent-harness/README.md": [
     "OP-0 intentionally does not include `.agent-harness/project.json`",

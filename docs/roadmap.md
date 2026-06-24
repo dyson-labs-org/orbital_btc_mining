@@ -30,11 +30,11 @@ Status: complete
 
 Outcome: `resource-scenario.v1`, resource-transition results, and scenario-suite fixtures validate deterministic local behavior without external calls.
 
-### R2 - Operational-Pilot Activation
+### R2 - Controlled Test Range Surface
 
 Status: in_progress
 
-Outcome: active docs, validators, status metadata, and safety boundaries represent the active tree as a controlled operational-pilot test range.
+Outcome: status output, CLI behavior, and verification surfaces consistently expose Orbital as a controlled local test range with deterministic resource-accounting capability only.
 
 ### R3 - Next Meaningful Product Increment
 
@@ -42,13 +42,13 @@ Status: planned
 
 Outcome: add a representative deterministic product increment, such as richer resource-state transitions or a small local workload fixture, without live external effects.
 
-Exit gate: reviewed task contract, deterministic tests, `.\eng.ps1 verify`, sanitized evidence, independent review, and rollback note.
+Exit gate: committed deterministic fixtures, `.\eng.ps1 verify`, and reviewed evidence that identifies the product capability added and the product surfaces it changes.
 
-### R4 - Recovery And Reliability Exercises
+### R4 - Deterministic Failure-State Scenarios
 
 Status: planned
 
-Outcome: exercise controlled failure, recovery, and rollback against disposable repo-local state while preserving deterministic product behavior.
+Outcome: add local fixtures that model recoverable resource deficits, constraint failures, and state reconciliation without external effects.
 
 ### R5 - Product Direction Decision
 
