@@ -5,25 +5,44 @@ import process from "node:process";
 import { execFileSync } from "node:child_process";
 
 const root = process.cwd();
+const failures = [];
 
 const requiredFiles = [
   "README.md",
   "AGENTS.md",
   "eng.ps1",
   ".agent-harness/README.md",
-  ".agent-harness/tasks/i0-audit-recharter.task.json",
-  "docs/product-charter.md",
+  "docs/operational-pilot.md",
   "docs/safety-boundaries.md",
   "docs/legacy-inventory.md",
   "docs/audit-report.md",
   "docs/research-assumptions.md",
-  "docs/verification-plan.md",
   "docs/roadmap.md",
+  "docs/history/harness-evaluations.md",
   "docs/architecture/ADR-0001-recharter-as-orbital-compute-lab.md",
   "docs/architecture/ADR-0002-deterministic-offline-first.md",
   "docs/architecture/ADR-0003-node-standard-library-skeleton.md",
   "docs/legacy-removal-manifest.md",
   "docs/legacy-source-access.md",
+  "scripts/validate-operational-pilot.mjs",
+  "scripts/validate-active-tree-boundaries.mjs",
+  "tests/operational-pilot.test.mjs"
+];
+
+const removedActivePaths = [
+  "docs/product-charter.md",
+  "docs/verification-plan.md",
+  "docs/incubation/i0.5-measurements.md",
+  "docs/incubation/i0.5-harness-friction.md",
+  "docs/incubation/evaluations/cycle-1-plan.md",
+  "docs/incubation/evaluations/cycle-1-results.md",
+  "docs/incubation/evaluations/cycle-1-friction-register.md",
+  "docs/incubation/evaluations/cycle-2-plan.md",
+  "docs/incubation/evaluations/cycle-2-results.md",
+  "docs/incubation/evaluations/cycle-2-friction-register.md",
+  "docs/incubation/evaluations/cycle-3-plan.md",
+  "docs/incubation/evaluations/cycle-3-results.md",
+  "docs/incubation/evaluations/cycle-3-friction-register.md",
   "scripts/validate-incubation-charter.mjs",
   "scripts/validate-clean-skeleton.mjs",
   "tests/incubation-charter.test.mjs"
@@ -31,61 +50,67 @@ const requiredFiles = [
 
 const requiredText = {
   "README.md": [
-    "Orbital Compute Lab",
-    "incubation",
-    "legacy/pre-orbital-compute-lab",
-    "c93c7366edcd86b83896c3c39b753805183c3126",
-    "Product implementation: skeleton",
-    "Status: incubation skeleton",
-    "Legacy source: removed from active main",
-    "External service calls during verification: none"
+    "operational pilot and controlled test range",
+    "Product stage: controlled test range",
+    "node scripts/validate-operational-pilot.mjs",
+    "node scripts/validate-active-tree-boundaries.mjs",
+    "External service calls during verification"
   ],
-  "docs/product-charter.md": [
-    "Incubation repository",
-    "not an operational pilot",
-    "No active Bitcoin mining",
-    "I0 Exit Criteria"
+  "AGENTS.md": [
+    "operational pilot and controlled test range",
+    "Reviewed pilot branches may add or remove dependencies",
+    "Do not create `.agent-harness/project.json` for OP-0"
+  ],
+  "docs/operational-pilot.md": [
+    "Classification: `operational_pilot`",
+    "Current milestone: `OP-0`",
+    "C3-HARNESS-004 status: `open / accepted_for_offline_v0.2`",
+    "No `.agent-harness/project.json` is required for OP-0",
+    "No consumed schema exists"
   ],
   "docs/safety-boundaries.md": [
-    "Not Authorized In I0",
-    "pip install -r requirements.txt",
-    "python app.py",
-    "gunicorn app:app",
-    "autocommit.py",
-    "codex_merge.py"
-  ],
-  "docs/legacy-inventory.md": [
-    "`package.json` scripts | empty",
-    "`pnpm` workspace scripts | empty",
-    "Portal health, invoice, integration, smoke, dispatch, executor commands | empty",
-    "Local Absolute Paths"
-  ],
-  "docs/audit-report.md": [
-    "not a gf-sdk JavaScript or TypeScript monorepo",
-    "No likely active credential",
-    "unresolved merge conflict markers",
-    "ccdff5326cfd8f4b4123faebbeac477bb3d1235f",
-    "does not advance an operational pilot gate"
-  ],
-  "docs/verification-plan.md": [
-    "git diff --check",
-    "node scripts/validate-incubation-charter.mjs",
-    "node --test",
-    "not_run",
-    "empty",
-    "noop"
+    "Prohibited External Side Effects",
+    "mutation of `legacy/pre-orbital-compute-lab`",
+    "Canonical KB writes before a reviewed gate"
   ],
   "docs/roadmap.md": [
-    "I0 - Audit/Re-charter",
-    "I1 - Deterministic Simulation Kernel",
-    "I2 - Workload/Scheduler",
-    "I3 - Explainability/Telemetry",
-    "I4 - Optional Local AI Advisor Evaluation",
-    "I5 - Incubation Demonstrator",
-    "I0.5",
-    "1.0 Decision Gate"
+    "Status: `controlled_test_range`",
+    "R3 - Next Meaningful Product Increment",
+    "Product capability claims require committed implementation"
+  ],
+  "docs/history/harness-evaluations.md": [
+    "Cycle 1",
+    "Cycle 2",
+    "Cycle 3",
+    "C3-HARNESS-004 remains open / `not_run`"
+  ],
+  ".agent-harness/README.md": [
+    "OP-0 intentionally does not include `.agent-harness/project.json`",
+    "No consumed harness schema exists",
+    "node scripts/validate-operational-pilot.mjs"
   ]
 };
+
+const activeDocs = [
+  "README.md",
+  "AGENTS.md",
+  ".agent-harness/README.md",
+  "docs/operational-pilot.md",
+  "docs/safety-boundaries.md",
+  "docs/roadmap.md",
+  "docs/history/harness-evaluations.md"
+];
+
+const forbiddenActiveSnippets = [
+  "validate-incubation-charter.mjs",
+  "validate-clean-skeleton.mjs",
+  "docs/product-charter.md",
+  "docs/verification-plan.md",
+  "docs/incubation/evaluations/",
+  "Status: incubation skeleton",
+  "Product implementation: skeleton",
+  "Incubation stage:"
+];
 
 const forbiddenEngText = [
   "pip install",
@@ -118,8 +143,8 @@ const allowedEngInvocations = new Set([
   "& git --version",
   "& node --version",
   "& git diff --check",
-  "& node scripts/validate-incubation-charter.mjs",
-  "& node scripts/validate-clean-skeleton.mjs",
+  "& node scripts/validate-operational-pilot.mjs",
+  "& node scripts/validate-active-tree-boundaries.mjs",
   "& node scripts/validate-resource-scenarios.mjs",
   "& node scripts/validate-resource-transitions.mjs",
   "& node scripts/validate-scenario-suites.mjs",
@@ -136,14 +161,17 @@ const allowedEngInvocations = new Set([
 
 const baselineSha = "c93c7366edcd86b83896c3c39b753805183c3126";
 const preservedBranch = "legacy/pre-orbital-compute-lab";
-const workBranch = "incubation/orbital-compute-lab-charter";
 
-function read(relPath) {
-  return fs.readFileSync(path.join(root, relPath), "utf8");
+function relPath(relativePath) {
+  return path.join(root, relativePath);
 }
 
-function exists(relPath) {
-  return fs.existsSync(path.join(root, relPath));
+function read(relativePath) {
+  return fs.readFileSync(relPath(relativePath), "utf8");
+}
+
+function exists(relativePath) {
+  return fs.existsSync(relPath(relativePath));
 }
 
 function gitRevParse(ref) {
@@ -158,11 +186,15 @@ function gitRevParse(ref) {
   }
 }
 
-const failures = [];
-
 for (const relPath of requiredFiles) {
   if (!exists(relPath)) {
     failures.push(`missing required file: ${relPath}`);
+  }
+}
+
+for (const relPath of removedActivePaths) {
+  if (exists(relPath)) {
+    failures.push(`obsolete active path still exists: ${relPath}`);
   }
 }
 
@@ -179,6 +211,21 @@ for (const [relPath, snippets] of Object.entries(requiredText)) {
     if (!text.includes(snippet)) {
       failures.push(`${relPath} missing required text: ${snippet}`);
     }
+  }
+}
+
+for (const relPath of activeDocs) {
+  if (!exists(relPath)) {
+    continue;
+  }
+  const text = read(relPath);
+  for (const snippet of forbiddenActiveSnippets) {
+    if (text.includes(snippet)) {
+      failures.push(`${relPath} contains obsolete active text: ${snippet}`);
+    }
+  }
+  if (/\bincubation\b/i.test(text)) {
+    failures.push(`${relPath} uses obsolete active classification: incubation`);
   }
 }
 
@@ -209,40 +256,23 @@ if (exists(".gitignore")) {
   }
 }
 
-if (exists(".agent-harness/tasks/i0-audit-recharter.task.json")) {
-  try {
-    const task = JSON.parse(read(".agent-harness/tasks/i0-audit-recharter.task.json"));
-    if (task.baseline_sha !== baselineSha) {
-      failures.push("task baseline_sha does not match preserved baseline");
-    }
-    if (task.preserved_branch !== preservedBranch) {
-      failures.push("task preserved_branch does not match required branch");
-    }
-    if (task.work_branch !== workBranch) {
-      failures.push("task work_branch does not match required branch");
-    }
-    if (task.classification !== "incubation") {
-      failures.push("task classification must be incubation");
-    }
-    if (task.product_implementation !== "not_started") {
-      failures.push("task product implementation must be not_started");
-    }
-    if (task.external_calls !== "none") {
-      failures.push("task external calls must be none");
-    }
-    if (task.legacy_source !== "not_run") {
-      failures.push("task legacy source must be not_run");
-    }
-    if (task.project_json?.status !== "not_created") {
-      failures.push("task must record .agent-harness/project.json as not_created");
-    }
-    for (const status of ["passed", "failed", "skipped", "not_run", "empty", "noop"]) {
-      if (!task.status_vocabulary?.includes(status)) {
-        failures.push(`task status vocabulary missing: ${status}`);
-      }
-    }
-  } catch (error) {
-    failures.push(`task JSON parse failed: ${error.message}`);
+let status = null;
+try {
+  status = JSON.parse(execFileSync(process.execPath, ["src/cli.mjs", "status", "--json"], {
+    cwd: root,
+    encoding: "utf8",
+    env: { PATH: process.env.PATH ?? "" }
+  }));
+} catch (error) {
+  failures.push(`status CLI JSON failed: ${error.message}`);
+}
+
+if (status) {
+  if (status.maturity !== "operational_pilot") {
+    failures.push("status maturity must be operational_pilot");
+  }
+  if (status.implementation_status !== "controlled_test_range") {
+    failures.push("status implementation_status must be controlled_test_range");
   }
 }
 
@@ -254,12 +284,13 @@ if (preservedHead !== baselineSha) {
 }
 
 const summary = {
-  validator: "incubation-charter",
+  validator: "operational-pilot",
   status: failures.length === 0 ? "passed" : "failed",
-  charter_status: "incubation",
+  pilot_status: "operational_pilot",
+  active_tree_status: "controlled_test_range",
   legacy_source: "not_run",
   external_calls: "none",
-  product_implementation: "skeleton",
+  project_json: "not_created",
   failures
 };
 

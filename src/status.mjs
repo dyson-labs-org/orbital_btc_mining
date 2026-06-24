@@ -2,8 +2,8 @@ export const productStatus = Object.freeze({
   schema_version: "1.0",
   product_name: "Orbital Compute Lab",
   repository: "dyson-labs-org/orbital_btc_mining",
-  maturity: "incubation",
-  implementation_status: "skeleton",
+  maturity: "operational_pilot",
+  implementation_status: "controlled_test_range",
   runtime: {
     name: "node",
     minimum_version: "22"

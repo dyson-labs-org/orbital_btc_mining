@@ -24,6 +24,11 @@ const requiredFiles = [
   "tests/unit/resource-run-cli.test.mjs",
   "tests/unit/scenario-suite.test.mjs",
   "tests/unit/scenario-suite-cli.test.mjs",
+  "tests/operational-pilot.test.mjs",
+  "docs/operational-pilot.md",
+  "docs/safety-boundaries.md",
+  "docs/roadmap.md",
+  "docs/history/harness-evaluations.md",
   "docs/legacy-removal-manifest.md",
   "docs/legacy-source-access.md",
   "docs/architecture/ADR-0003-node-standard-library-skeleton.md",
@@ -54,7 +59,14 @@ const forbiddenActivePaths = [
   "LICENSE",
   ".python-version",
   "autocommit.py",
-  "codex_merge.py"
+  "codex_merge.py",
+  "docs/product-charter.md",
+  "docs/verification-plan.md",
+  "docs/incubation/i0.5-measurements.md",
+  "docs/incubation/i0.5-harness-friction.md",
+  "scripts/validate-incubation-charter.mjs",
+  "scripts/validate-clean-skeleton.mjs",
+  "tests/incubation-charter.test.mjs"
 ];
 
 const lockfiles = [
@@ -129,14 +141,18 @@ function listFiles(dir) {
 
 for (const file of requiredFiles) {
   if (!exists(file)) {
-    failures.push(`missing required skeleton file: ${file}`);
+    failures.push(`missing required active-tree file: ${file}`);
   }
 }
 
 for (const legacyPath of forbiddenActivePaths) {
   if (exists(legacyPath)) {
-    failures.push(`legacy path remains active: ${legacyPath}`);
+    failures.push(`forbidden active path remains: ${legacyPath}`);
   }
+}
+
+if (exists("docs/incubation/evaluations")) {
+  failures.push("obsolete cycle plan/result/friction directory remains: docs/incubation/evaluations");
 }
 
 for (const lockfile of lockfiles) {
@@ -184,6 +200,18 @@ if (packageJson.publishConfig) {
 }
 
 const scripts = packageJson.scripts ?? {};
+if (scripts["validate:pilot"] !== "node scripts/validate-operational-pilot.mjs") {
+  failures.push("package validate:pilot script mismatch");
+}
+if (scripts["validate:active-tree"] !== "node scripts/validate-active-tree-boundaries.mjs") {
+  failures.push("package validate:active-tree script mismatch");
+}
+if (scripts.verify !== "node scripts/validate-active-tree-boundaries.mjs") {
+  failures.push("package verify script mismatch");
+}
+if (scripts["validate:charter"] || scripts["validate:skeleton"]) {
+  failures.push("obsolete package validator script remains");
+}
 for (const lifecycle of ["preinstall", "install", "postinstall", "prepare", "prepublish", "prepack", "postpack"]) {
   if (scripts[lifecycle]) {
     failures.push(`package lifecycle script is forbidden: ${lifecycle}`);
@@ -216,8 +244,11 @@ if (status) {
   if (status.repository !== "dyson-labs-org/orbital_btc_mining") {
     failures.push("status repository mismatch");
   }
-  if (status.implementation_status !== "skeleton") {
-    failures.push("status implementation_status must be skeleton");
+  if (status.maturity !== "operational_pilot") {
+    failures.push("status maturity must be operational_pilot");
+  }
+  if (status.implementation_status !== "controlled_test_range") {
+    failures.push("status implementation_status must be controlled_test_range");
   }
   if (status.version !== packageJson.version) {
     failures.push("status version must match package version");
@@ -292,22 +323,7 @@ if (!legacyAccess.includes("legacy/pre-orbital-compute-lab") || !legacyAccess.in
   failures.push("legacy source access document must name preserved branch and commit");
 }
 
-const roadmap = exists("docs/roadmap.md") ? read("docs/roadmap.md") : "";
-if (/I1[^\\n]+Status:\\s*(?:in_progress|complete)/i.test(roadmap) || /I1[^\\n]+implemented/i.test(roadmap)) {
-  failures.push("roadmap must not call I1 implemented or started");
-}
-if (/\boperational\b/i.test(roadmap) && /Orbital Compute Lab[^\\n]+operational/i.test(roadmap)) {
-  failures.push("roadmap must not call Orbital Compute Lab operational");
-}
-
-const docFiles = [
-  "README.md",
-  "docs/product-charter.md",
-  "docs/safety-boundaries.md",
-  "docs/verification-plan.md",
-  "docs/roadmap.md"
-];
-for (const file of docFiles) {
+for (const file of ["README.md", "AGENTS.md", "docs/operational-pilot.md", "docs/safety-boundaries.md", "docs/roadmap.md"]) {
   if (!exists(file)) {
     continue;
   }
@@ -321,9 +337,9 @@ for (const file of docFiles) {
 }
 
 const summary = {
-  validator: "clean-skeleton",
+  validator: "active-tree-boundaries",
   status: failures.length === 0 ? "passed" : "failed",
-  product_implementation: "skeleton",
+  active_tree_status: "controlled_test_range",
   dependency_installation: "not_required",
   external_service_calls: "none",
   failures

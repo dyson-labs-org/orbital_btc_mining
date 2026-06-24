@@ -4,7 +4,7 @@ import test from "node:test";
 
 const packageJson = JSON.parse(fs.readFileSync("package.json", "utf8"));
 
-test("package metadata is private dependency-free skeleton metadata", () => {
+test("package metadata is private dependency-free pilot metadata", () => {
   assert.equal(packageJson.name, "orbital-compute-lab");
   assert.equal(packageJson.private, true);
   assert.equal(packageJson.version, "0.0.0");
@@ -16,6 +16,11 @@ test("package metadata is private dependency-free skeleton metadata", () => {
 
 test("package scripts contain no install or lifecycle effects", () => {
   const scripts = packageJson.scripts ?? {};
+  assert.equal(scripts["validate:pilot"], "node scripts/validate-operational-pilot.mjs");
+  assert.equal(scripts["validate:active-tree"], "node scripts/validate-active-tree-boundaries.mjs");
+  assert.equal(scripts.verify, "node scripts/validate-active-tree-boundaries.mjs");
+  assert.equal(scripts["validate:charter"], undefined);
+  assert.equal(scripts["validate:skeleton"], undefined);
   for (const lifecycle of ["preinstall", "install", "postinstall", "prepare", "prepublish", "prepack", "postpack"]) {
     assert.equal(scripts[lifecycle], undefined);
   }
