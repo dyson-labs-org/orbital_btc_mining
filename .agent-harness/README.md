@@ -1,24 +1,16 @@
 # Agent Harness
 
-This directory records the incubation task contract for Orbital Compute Lab.
+This directory records Orbital task contracts and ignored evidence for the operational pilot.
 
-I0 intentionally does not include `.agent-harness/project.json`. The gap is
-tracked because the harness does not yet have a reviewed project schema for
-incubation repositories in this repo.
+OP-0 intentionally does not include `.agent-harness/project.json`. No consumed harness schema exists for this repository, so `AGENTS.md`, `eng.ps1`, task contracts, installed harness commands, and reviewed PR evidence are the active control surface.
 
-Allowed I0 commands:
+Allowed OP-0 local commands include:
 
 - `.\eng.ps1 bootstrap`
 - `.\eng.ps1 verify`
-- `node scripts/validate-incubation-charter.mjs`
-- `node --test tests/incubation-charter.test.mjs`
+- `node scripts/validate-operational-pilot.mjs`
+- `node scripts/validate-active-tree-boundaries.mjs`
+- `node --test`
 - `git diff --check`
 
-Legacy commands remain `not_run`.
-
-## I0.5
-
-I0.5 adds `.agent-harness/tasks/i0.5-clean-product-skeleton.task.json`.
-Generated I0.5 evidence belongs under ignored `.agent-harness/artifacts/i0.5/`.
-No `.agent-harness/project.json` is created because no reviewed incubation
-project schema is available.
+Generated evidence belongs under ignored `.agent-harness/artifacts/` or `.agent-harness/tmp/` paths. Historical task contracts remain for provenance; active pilot status is defined by repository docs and current PR evidence.

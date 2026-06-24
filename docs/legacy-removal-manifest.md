@@ -46,11 +46,11 @@ legacy removal is recoverable from `legacy/pre-orbital-compute-lab`.
 | `docs/architecture/ADR-0002-deterministic-offline-first.md` | retain unchanged | I0 architecture decision. |
 | `docs/audit-report.md` | retain and update | Audit record remains authoritative and gains I0.5 note. |
 | `docs/legacy-inventory.md` | retain and update | Legacy inventory remains public evidence. |
-| `docs/product-charter.md` | retain and update | Active charter. |
+| `docs/product-charter.md` | removed in OP-0 | Active facts moved to `docs/operational-pilot.md`. |
 | `docs/research-assumptions.md` | retain unchanged | Active assumption record. |
-| `docs/roadmap.md` | retain and update | Add I0.5 gate and keep I1 unstarted. |
+| `docs/roadmap.md` | retain and update | Active product capability roadmap. |
 | `docs/safety-boundaries.md` | retain and update | Active safety boundary. |
-| `docs/verification-plan.md` | retain and update | Active verification plan. |
+| `docs/verification-plan.md` | removed in OP-0 | Verification commands moved to `README.md`, `AGENTS.md`, `eng.ps1`, and validators. |
 | `eng.ps1` | retain and update | Canonical verification wrapper. |
 | `launch/launch_model.py` | delete from active main | Legacy launch model. |
 | `launch/launcher_db.csv` | delete from active main | Legacy launch model data. |
@@ -65,9 +65,9 @@ legacy removal is recoverable from `legacy/pre-orbital-compute-lab`.
 | `readme.txt` | delete from active main | Superseded legacy README. |
 | `render.yaml` | delete from active main | Legacy Render deployment configuration. |
 | `requirements.txt` | delete from active main | Legacy Python dependency list. |
-| `scripts/validate-incubation-charter.mjs` | retain and update | Active validator. |
+| `scripts/validate-incubation-charter.mjs` | renamed in OP-0 | Replaced by `scripts/validate-operational-pilot.mjs`. |
 | `templates/index.html` | delete from active main | Legacy Flask template. |
-| `tests/incubation-charter.test.mjs` | retain and update | Active tests. |
+| `tests/incubation-charter.test.mjs` | renamed in OP-0 | Replaced by `tests/operational-pilot.test.mjs`. |
 
 ## Planned Deletions
 
