@@ -2,7 +2,7 @@
 
 Orbital Compute Lab is the operational pilot and controlled test range for the provider-neutral Agent Engineering Harness. The active tree remains local, deterministic, and non-production while the pilot exercises task contracts, repository-owned verification, sanitized evidence, independent review, and rollback.
 
-Status: operational pilot with deterministic resource-scenario validation, resource transitions, resource-trace summaries, scenario-suite regression orchestration, and an OP-3 controlled failure-recovery rehearsal ready for independent review.
+Status: completed local operational-pilot test range for the v0.2 harness pilot, with deterministic resource-scenario validation, resource transitions, resource-trace summaries, scenario-suite regression orchestration, and a terminally reviewed OP-3 controlled failure-recovery rehearsal. OP-4 is recorded locally as a retrospective mirror of the authoritative harness proposal; it does not add product capability.
 
 Product stage: controlled test range.
 
@@ -10,7 +10,7 @@ Dependency installation: not required.
 
 External service calls during verification: none.
 
-The active product tree contains dependency-free Node.js product metadata, an honest status CLI, resource-scenario validation, a deterministic resource-transition engine, deterministic resource-trace summaries, a scenario-suite runner, an OP-3 repository-local recovery rehearsal, tests, and documentation. It does not implement a simulation kernel, scheduler, Bitcoin workload, AI workload, wallet, trading behavior, hosted AI behavior, network behavior, hardware control, production deployment, or mission authority.
+The active product tree contains dependency-free Node.js product metadata, an honest status CLI, resource-scenario validation, a deterministic resource-transition engine, deterministic resource-trace summaries, a scenario-suite runner, an OP-3 repository-local recovery rehearsal, tests, and documentation. It remains a maintained controlled offline test range and does not implement a simulation kernel, scheduler, Bitcoin workload, AI workload, wallet, trading behavior, hosted AI behavior, network behavior, hardware control, production deployment, or mission authority.
 
 ## Golden Commands
 

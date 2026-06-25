@@ -109,5 +109,20 @@ test("roadmap remains product-capability only", () => {
   const roadmap = read("docs/roadmap.md");
   assert.match(roadmap, /Status: `controlled_test_range`/);
   assert.match(roadmap, /R3 - Next Meaningful Product Increment/);
+  assert.match(roadmap, /R2 - Controlled Test Range Surface[\s\S]*?Status: complete/);
+  assert.match(roadmap, /R4 - Deterministic Failure-State Scenarios[\s\S]*?Status: complete/);
+  assert.match(roadmap, /R5 - Product Direction Decision[\s\S]*?Status: complete/);
+  assert.match(roadmap, /retain Orbital as a maintained controlled offline test range/);
   assert.doesNotMatch(roadmap, /OP-1|OP-2|OP-3|OP-4/);
+});
+
+test("operational pilot records local OP-4 closure without becoming harness authority", () => {
+  const pilot = read("docs/operational-pilot.md");
+  assert.match(pilot, /Current milestone: `OP-4`/);
+  assert.match(pilot, /Status: `complete`/);
+  assert.match(pilot, /Terminal OP-3 reviewed source/);
+  assert.match(pilot, /R2 local controlled-test-range surface: `complete`/);
+  assert.match(pilot, /R4 deterministic failure-state scenarios: `complete`/);
+  assert.match(pilot, /R5 local product-direction decision: `complete`/);
+  assert.match(pilot, /harness repository owns v0\.2 closure and the v0\.3 decision/);
 });

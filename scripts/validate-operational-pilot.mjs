@@ -84,8 +84,10 @@ const requiredText = {
   ],
   "docs/operational-pilot.md": [
     "Classification: `operational_pilot`",
-    "Current milestone: `OP-3`",
-    "Status: `op_3_ready_for_independent_review`",
+    "Current milestone: `OP-4`",
+    "Status: `complete`",
+    "Terminal OP-3 reviewed source",
+    "R5 local product-direction decision: `complete`",
     "C3-HARNESS-004 status: `open / accepted_for_offline_v0.2`",
     "No `.agent-harness/project.json` is required",
     "No consumed schema exists"
@@ -99,7 +101,8 @@ const requiredText = {
     "Status: `controlled_test_range`",
     "R3 - Next Meaningful Product Increment",
     "R4 - Deterministic Failure-State Scenarios",
-    "Status: ready_for_independent_review",
+    "R5 - Product Direction Decision",
+    "completed product-direction decision retaining the controlled offline test range",
     "Product capability claims require committed implementation"
   ],
   "docs/history/harness-evaluations.md": [
@@ -110,6 +113,7 @@ const requiredText = {
   ],
   ".agent-harness/README.md": [
     "OP-3 failure recovery",
+    "OP-4 is documentation-only local retrospective closure",
     "No consumed harness schema exists",
     "node scripts/validate-operational-pilot.mjs",
     "node scripts/validate-op-3-failure-recovery.mjs"
@@ -346,6 +350,7 @@ const summary = {
   validator: "operational-pilot",
   status: failures.length === 0 ? "passed" : "failed",
   pilot_status: "operational_pilot",
+  op_4_status: "complete",
   active_tree_status: "controlled_test_range",
   legacy_source: "not_run",
   external_calls: "none",
