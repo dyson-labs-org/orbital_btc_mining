@@ -9,11 +9,17 @@ const REPORT_SCHEMA_VERSION = "op-3-failure-recovery-report.v1";
 const PLAN_PATH = "fixtures/recovery/op-3-failure-recovery-plan.v1.json";
 const REPORT_PATH = ".agent-harness/artifacts/op-3-failure-recovery/op-3-failure-recovery-report.v1.json";
 const TIMING_PATH = ".agent-harness/artifacts/op-3-failure-recovery/op-3-failure-recovery-timing.v1.json";
+const EXPECTED_SOURCE_SUITE = "fixtures/suites/core-resource-regression.v1.json";
+const EXPECTED_DISPOSABLE_ROOT = ".agent-harness/tmp/op-3-failure-recovery/";
+const EXPECTED_EVIDENCE_ROOT = ".agent-harness/artifacts/op-3-failure-recovery/";
+const EXPECTED_WORKSPACE_SUITE = ".agent-harness/tmp/op-3-failure-recovery/workspace/core-resource-regression.v1.json";
 const LEGACY_BRANCH = "legacy/pre-orbital-compute-lab";
 const LEGACY_SHA = "c93c7366edcd86b83896c3c39b753805183c3126";
 const EMPTY_SHA256 = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
 
 const root = process.cwd();
+const rootAbsolute = path.resolve(root);
+const rootReal = fs.realpathSync.native(rootAbsolute);
 
 function abs(relativePath) {
   return path.join(root, relativePath);
@@ -110,6 +116,136 @@ function arraysEqual(left, right) {
     left.every((value, index) => value === right[index]);
 }
 
+function displayPath(absolutePath) {
+  return path.relative(rootAbsolute, absolutePath).replaceAll("\\", "/") || ".";
+}
+
+function sameFilesystemPath(left, right) {
+  const normalize = process.platform === "win32"
+    ? (value) => value.toLowerCase()
+    : (value) => value;
+  return normalize(path.normalize(left)) === normalize(path.normalize(right));
+}
+
+function isWithin(parent, child) {
+  const relative = path.relative(parent, child);
+  return relative === "" || (!relative.startsWith("..") && !path.isAbsolute(relative));
+}
+
+function resolveRepoRelativePath(label, relativePath, failures) {
+  if (typeof relativePath !== "string" || relativePath.length === 0) {
+    failures.push(`${label} must be a non-empty repository-relative path`);
+    return null;
+  }
+  if (path.isAbsolute(relativePath)) {
+    failures.push(`${label} must not be absolute`);
+    return null;
+  }
+  const absolutePath = path.resolve(rootAbsolute, relativePath);
+  if (!isWithin(rootAbsolute, absolutePath)) {
+    failures.push(`${label} must stay within the repository root`);
+    return null;
+  }
+  return absolutePath;
+}
+
+function collectRedirectFailures(label, absolutePath) {
+  const failures = [];
+  if (!isWithin(rootAbsolute, absolutePath)) {
+    failures.push(`${label} must stay within the repository root`);
+    return failures;
+  }
+
+  const relative = path.relative(rootAbsolute, absolutePath);
+  if (relative === "") {
+    return failures;
+  }
+
+  let current = rootAbsolute;
+  for (const part of relative.split(path.sep)) {
+    current = path.join(current, part);
+    let stat = null;
+    try {
+      stat = fs.lstatSync(current);
+    } catch (error) {
+      if (error.code === "ENOENT") {
+        break;
+      }
+      throw error;
+    }
+    if (stat.isSymbolicLink()) {
+      failures.push(`${label} has a symlink or reparse-point path component: ${displayPath(current)}`);
+      continue;
+    }
+    const real = fs.realpathSync.native(current);
+    const expectedReal = path.join(rootReal, path.relative(rootAbsolute, current));
+    if (!sameFilesystemPath(real, expectedReal)) {
+      failures.push(`${label} resolves outside the lexical repository path at: ${displayPath(current)}`);
+    }
+  }
+  return failures;
+}
+
+function evaluatePathSafety(plan) {
+  const failures = [];
+  if (plan.source_suite !== EXPECTED_SOURCE_SUITE) {
+    failures.push(`source_suite must be ${EXPECTED_SOURCE_SUITE}`);
+  }
+  if (plan.disposable_state_root !== EXPECTED_DISPOSABLE_ROOT) {
+    failures.push(`disposable_state_root must be ${EXPECTED_DISPOSABLE_ROOT}`);
+  }
+  if (plan.ignored_evidence_root !== EXPECTED_EVIDENCE_ROOT) {
+    failures.push(`ignored_evidence_root must be ${EXPECTED_EVIDENCE_ROOT}`);
+  }
+  if (plan.workspace_suite !== EXPECTED_WORKSPACE_SUITE) {
+    failures.push(`workspace_suite must be ${EXPECTED_WORKSPACE_SUITE}`);
+  }
+
+  const resolved = {
+    source_suite: resolveRepoRelativePath("source_suite", plan.source_suite, failures),
+    workspace_suite: resolveRepoRelativePath("workspace_suite", plan.workspace_suite, failures),
+    disposable_state_root: resolveRepoRelativePath("disposable_state_root", plan.disposable_state_root, failures),
+    ignored_evidence_root: resolveRepoRelativePath("ignored_evidence_root", plan.ignored_evidence_root, failures),
+    report_path: resolveRepoRelativePath("report_path", REPORT_PATH, failures),
+    timing_path: resolveRepoRelativePath("timing_path", TIMING_PATH, failures)
+  };
+
+  if (resolved.workspace_suite && resolved.disposable_state_root && !isWithin(resolved.disposable_state_root, resolved.workspace_suite)) {
+    failures.push("workspace_suite must remain beneath disposable_state_root");
+  }
+  if (resolved.report_path && resolved.ignored_evidence_root && !isWithin(resolved.ignored_evidence_root, resolved.report_path)) {
+    failures.push("report_path must remain beneath ignored_evidence_root");
+  }
+  if (resolved.timing_path && resolved.ignored_evidence_root && !isWithin(resolved.ignored_evidence_root, resolved.timing_path)) {
+    failures.push("timing_path must remain beneath ignored_evidence_root");
+  }
+
+  for (const [label, absolutePath] of Object.entries(resolved)) {
+    if (absolutePath) {
+      failures.push(...collectRedirectFailures(label, absolutePath));
+    }
+  }
+
+  return {
+    status: failures.length === 0 ? "passed" : "failed",
+    checks: [
+      "fixed_repository_relative_paths",
+      "workspace_under_disposable_state_root",
+      "evidence_under_ignored_artifact_root",
+      "no_existing_symlink_or_reparse_components"
+    ],
+    failures
+  };
+}
+
+function assertPathSafety(plan) {
+  const safety = evaluatePathSafety(plan);
+  if (safety.status !== "passed") {
+    throw new Error(`unsafe OP-3 path configuration: ${safety.failures.join("; ")}`);
+  }
+  return safety;
+}
+
 function validatePlan(plan) {
   const failures = [];
   if (plan.schema_version !== "op-3-failure-recovery-plan.v1") {
@@ -123,6 +259,7 @@ function validatePlan(plan) {
   if (!Array.isArray(plan.regression_hashes) || plan.regression_hashes.length !== 7) {
     failures.push("plan must define seven regression hashes");
   }
+  failures.push(...evaluatePathSafety(plan).failures);
   return failures;
 }
 
@@ -131,14 +268,17 @@ function expectedChildArgv(plan) {
 }
 
 function seedWorkspace(plan) {
+  assertPathSafety(plan);
   fs.rmSync(abs(plan.disposable_state_root), { recursive: true, force: true });
   fs.mkdirSync(path.dirname(abs(plan.workspace_suite)), { recursive: true });
+  assertPathSafety(plan);
   const baselineBytes = fs.readFileSync(abs(plan.source_suite));
   fs.writeFileSync(abs(plan.workspace_suite), baselineBytes);
   return baselineBytes;
 }
 
 function injectFailure(plan) {
+  assertPathSafety(plan);
   const suite = readJson(plan.workspace_suite);
   const targetCase = suite.cases.find((item) => item.case_id === plan.controlled_failure.case_id);
   if (!targetCase) {
@@ -237,14 +377,19 @@ function runOneRehearsal(plan) {
     const failureChild = runNode(expectedChildArgv(plan));
     const failurePayload = parseSuitePayload(failureChild);
     const failedCase = firstFailedCase(failurePayload);
+    const observedFailureCaseId = failedCase?.case_id ?? null;
+    const failedCaseCount = failurePayload?.failed_case_count ?? null;
     const observedFailureCodes = failedCase?.failure_codes ?? [];
     const observedPhase = failurePhase(failurePayload);
     const expected = plan.controlled_failure;
     const controlledFailurePassed = failureChild.exit_code === expected.expected_child_exit_code &&
       observedPhase === expected.phase &&
+      failedCaseCount === 1 &&
+      observedFailureCaseId === expected.case_id &&
       arraysEqual(observedFailureCodes, expected.expected_failure_codes);
 
     const rollbackStart = process.hrtime.bigint();
+    assertPathSafety(plan);
     fs.writeFileSync(abs(plan.workspace_suite), baselineBytes);
     const restoredBytes = fs.readFileSync(abs(plan.workspace_suite));
     const rollbackElapsedNs = process.hrtime.bigint() - rollbackStart;
@@ -274,6 +419,8 @@ function runOneRehearsal(plan) {
     if (baselineStatus !== "passed") failures.push("baseline disposable suite did not pass");
     if (!ignoredState) failures.push("controlled state was not ignored by Git");
     if (!controlledFailurePassed) failures.push("controlled failure diagnosis did not match expected nonzero result");
+    if (failedCaseCount !== 1) failures.push("controlled failure must produce exactly one failed case");
+    if (observedFailureCaseId !== expected.case_id) failures.push("controlled failure case_id did not match expected case");
     if (!byteForByteRestoration) failures.push("rollback did not restore baseline bytes");
     if (restoredStateSha256 !== baselineStateSha256) failures.push("rollback did not restore baseline SHA-256");
     if (cleanupStatus !== "passed") failures.push("cleanup left orphaned disposable state");
@@ -299,10 +446,14 @@ function runOneRehearsal(plan) {
       observed_failure_phase: observedPhase,
       expected_failure_codes: expected.expected_failure_codes,
       observed_failure_codes: observedFailureCodes,
+      expected_failure_case_id: expected.case_id,
+      observed_failure_case_id: observedFailureCaseId,
+      failed_case_count: failedCaseCount,
       failure_classification: expected.classification,
       pre_existing_failure_list: baselineStatus === "passed" ? [] : ["baseline_disposable_suite_failed"],
       diagnosis: {
         case_id: expected.case_id,
+        observed_case_id: observedFailureCaseId,
         phase: observedPhase,
         expected_outcome: failedCase?.expected_outcome ?? null,
         observed_outcome: failedCase?.actual_outcome ?? null,
@@ -315,6 +466,7 @@ function runOneRehearsal(plan) {
         workspace_suite: plan.workspace_suite,
         ignored_by_git: ignoredState ? "passed" : "failed"
       },
+      path_safety: evaluatePathSafety(plan),
       baseline_state_sha256: baselineStateSha256,
       failed_state_sha256: failedStateSha256,
       restored_state_sha256: restoredStateSha256,
@@ -381,8 +533,11 @@ function main() {
     finalReport.status = "failed";
     finalReport.failures = [...(finalReport.failures ?? []), ...planFailures];
   }
+  finalReport.path_safety = finalReport.path_safety ?? evaluatePathSafety(plan);
 
+  assertPathSafety(plan);
   fs.mkdirSync(path.dirname(abs(REPORT_PATH)), { recursive: true });
+  assertPathSafety(plan);
   fs.writeFileSync(abs(REPORT_PATH), stableJson(finalReport));
   fs.writeFileSync(abs(TIMING_PATH), stableJson({
     schema_version: "op-3-failure-recovery-timing.v1",
