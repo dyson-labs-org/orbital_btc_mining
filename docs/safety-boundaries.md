@@ -7,6 +7,7 @@ Orbital Compute Lab is local, deterministic, and non-production unless a later r
 - Repository-local source, fixtures, tests, and documentation.
 - `.\eng.ps1 bootstrap` and `.\eng.ps1 verify`.
 - Node.js validators and deterministic CLI commands documented in `README.md`.
+- OP-3 disposable rehearsal state under `.agent-harness/tmp/op-3-failure-recovery/`.
 - Ignored artifacts under `.agent-harness/artifacts/` and `.agent-harness/tmp/`.
 - Read-only inspection of `legacy/pre-orbital-compute-lab`.
 

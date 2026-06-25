@@ -47,10 +47,14 @@ const requiredFiles = [
   "docs/contracts/operational-status-v1.md",
   "scripts/validate-scenario-suites.mjs",
   "scripts/validate-resource-trace-summaries.mjs",
+  "scripts/validate-op-3-failure-recovery.mjs",
   "scripts/validate-operational-status.mjs",
   "fixtures/summaries/nominal-resource-run-summary.v1.json",
   "fixtures/summaries/energy-deficit-summary.v1.json",
-  "fixtures/summaries/combined-constraints-summary.v1.json"
+  "fixtures/summaries/combined-constraints-summary.v1.json",
+  "fixtures/recovery/op-3-failure-recovery-plan.v1.json",
+  ".agent-harness/tasks/op-3-failure-recovery.task.json",
+  "tests/op-3-failure-recovery.test.mjs"
 ];
 
 const forbiddenActivePaths = [
@@ -217,6 +221,9 @@ if (scripts["validate:pilot"] !== "node scripts/validate-operational-pilot.mjs")
 }
 if (scripts["validate:active-tree"] !== "node scripts/validate-active-tree-boundaries.mjs") {
   failures.push("package validate:active-tree script mismatch");
+}
+if (scripts["validate:op-3"] !== "node scripts/validate-op-3-failure-recovery.mjs") {
+  failures.push("package validate:op-3 script mismatch");
 }
 if (scripts.verify !== "node scripts/validate-active-tree-boundaries.mjs") {
   failures.push("package verify script mismatch");
