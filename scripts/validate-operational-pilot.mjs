@@ -12,6 +12,8 @@ const requiredFiles = [
   "AGENTS.md",
   "eng.ps1",
   ".agent-harness/README.md",
+  ".agent-harness/tasks/op-1-operational-status-contract.task.json",
+  ".agent-harness/tasks/op-2-resource-trace-summary.task.json",
   "docs/operational-pilot.md",
   "docs/safety-boundaries.md",
   "docs/legacy-inventory.md",
@@ -19,6 +21,8 @@ const requiredFiles = [
   "docs/research-assumptions.md",
   "docs/roadmap.md",
   "docs/history/harness-evaluations.md",
+  "docs/contracts/operational-status-v1.md",
+  "docs/simulation/resource-trace-summary-v1.md",
   "docs/architecture/ADR-0001-recharter-as-orbital-compute-lab.md",
   "docs/architecture/ADR-0002-deterministic-offline-first.md",
   "docs/architecture/ADR-0003-node-standard-library-skeleton.md",
@@ -26,7 +30,15 @@ const requiredFiles = [
   "docs/legacy-source-access.md",
   "scripts/validate-operational-pilot.mjs",
   "scripts/validate-active-tree-boundaries.mjs",
-  "tests/operational-pilot.test.mjs"
+  "scripts/validate-operational-status.mjs",
+  "scripts/validate-resource-trace-summaries.mjs",
+  "tests/operational-pilot.test.mjs",
+  "tests/unit/operational-status.test.mjs",
+  "tests/unit/resource-trace-summary.test.mjs",
+  "tests/unit/resource-trace-summary-cli.test.mjs",
+  "fixtures/summaries/nominal-resource-run-summary.v1.json",
+  "fixtures/summaries/energy-deficit-summary.v1.json",
+  "fixtures/summaries/combined-constraints-summary.v1.json"
 ];
 
 const removedActivePaths = [
@@ -54,7 +66,11 @@ const requiredText = {
     "Product stage: controlled test range",
     "node scripts/validate-operational-pilot.mjs",
     "node scripts/validate-active-tree-boundaries.mjs",
-    "External service calls during verification"
+    "node scripts/validate-operational-status.mjs",
+    "External service calls during verification",
+    "node scripts/validate-operational-status.mjs",
+    "node scripts/validate-resource-trace-summaries.mjs",
+    "Operational status v1"
   ],
   "AGENTS.md": [
     "operational pilot and controlled test range",
@@ -145,14 +161,17 @@ const allowedEngInvocations = new Set([
   "& git diff --check",
   "& node scripts/validate-operational-pilot.mjs",
   "& node scripts/validate-active-tree-boundaries.mjs",
+  "& node scripts/validate-operational-status.mjs",
   "& node scripts/validate-resource-scenarios.mjs",
   "& node scripts/validate-resource-transitions.mjs",
+  "& node scripts/validate-resource-trace-summaries.mjs",
   "& node scripts/validate-scenario-suites.mjs",
   "& node --test",
   "& node src/cli.mjs status --json",
   "& node src/cli.mjs validate-scenario fixtures/scenarios/minimal-sunlit.v1.json --json",
   "& node src/cli.mjs run-scenario fixtures/runs/nominal-resource-run.v1.json --json",
   "& node src/cli.mjs run-scenario fixtures/runs/energy-deficit.v1.json --json",
+  "& node src/cli.mjs summarize-scenario fixtures/runs/nominal-resource-run.v1.json --json",
   "& node src/cli.mjs run-scenario fixtures/scenarios/invalid/malformed-json.v1.json --json",
   "& node src/cli.mjs run-suite fixtures/suites/core-resource-regression.v1.json --json",
   "& node src/cli.mjs run-suite fixtures/suites/constraint-regression.v1.json --json",

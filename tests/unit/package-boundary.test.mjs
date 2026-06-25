@@ -18,6 +18,8 @@ test("package scripts contain no install or lifecycle effects", () => {
   const scripts = packageJson.scripts ?? {};
   assert.equal(scripts["validate:pilot"], "node scripts/validate-operational-pilot.mjs");
   assert.equal(scripts["validate:active-tree"], "node scripts/validate-active-tree-boundaries.mjs");
+  assert.equal(scripts["validate:status"], "node scripts/validate-operational-status.mjs");
+  assert.equal(scripts["validate:trace-summary"], "node scripts/validate-resource-trace-summaries.mjs");
   assert.equal(scripts.verify, "node scripts/validate-active-tree-boundaries.mjs");
   assert.equal(scripts["validate:charter"], undefined);
   assert.equal(scripts["validate:skeleton"], undefined);

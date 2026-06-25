@@ -8,6 +8,10 @@ import {
   transitionResultPayload
 } from "./domain/resource-transition.mjs";
 import {
+  summarizeScenarioDocument,
+  traceSummaryPayload
+} from "./domain/resource-trace-summary.mjs";
+import {
   runScenarioSuiteFile,
   suiteRunPayload
 } from "./domain/scenario-suite.mjs";
@@ -21,15 +25,17 @@ function writeHelp() {
       "Orbital Compute Lab",
       "",
       "Commands:",
-      "  status                         Print deterministic operational-pilot status.",
-      "  status --json                  Print the status object as JSON.",
-      "  validate-scenario <path>       Validate a resource-scenario.v1 file.",
-      "  validate-scenario <path> --json Print validation as deterministic JSON.",
-      "  run-scenario <path>            Run deterministic resource transitions.",
-      "  run-scenario <path> --json     Print transition result as deterministic JSON.",
-      "  run-suite <path>               Run a deterministic scenario-suite.v1 file.",
-      "  run-suite <path> --json        Print suite result as deterministic JSON.",
-      "  help                           Print this help.",
+      "  status                            Print deterministic operational-pilot status.",
+      "  status --json                     Print the status object as JSON.",
+      "  validate-scenario <path>          Validate a resource-scenario.v1 file.",
+      "  validate-scenario <path> --json   Print validation as deterministic JSON.",
+      "  run-scenario <path>               Run deterministic resource transitions.",
+      "  run-scenario <path> --json        Print transition result as deterministic JSON.",
+      "  summarize-scenario <path>         Summarize a resource-transition trace.",
+      "  summarize-scenario <path> --json  Print trace summary as deterministic JSON.",
+      "  run-suite <path>                  Run a deterministic scenario-suite.v1 file.",
+      "  run-suite <path> --json           Print suite result as deterministic JSON.",
+      "  help                              Print this help.",
       "",
       "No simulation kernel, workload scheduler, Bitcoin workload, AI workload, wallet,",
       "trading, external network, hardware, or mission-authority behavior is implemented."
@@ -47,6 +53,7 @@ function writeStatusText() {
   process.stdout.write("deterministic resource transition: implemented\n");
   process.stdout.write("scenario suite contract: implemented\n");
   process.stdout.write("scenario suite runner: implemented\n");
+  process.stdout.write("resource trace summary: implemented\n");
   process.stdout.write("scheduler: not implemented\n");
   process.stdout.write("bitcoin behavior: not implemented\n");
   process.stdout.write("ai behavior: not implemented\n");
@@ -76,6 +83,35 @@ function writeValidationJson(result) {
 
 function writeTransitionJson(result) {
   process.stdout.write(`${JSON.stringify(transitionResultPayload(result), null, 2)}\n`);
+}
+
+function writeTraceSummaryJson(result) {
+  process.stdout.write(`${JSON.stringify(traceSummaryPayload(result), null, 2)}\n`);
+}
+
+function writeTraceSummaryText(summary) {
+  process.stdout.write(`resource trace summary: ${summary.scenario_id}\n`);
+  process.stdout.write(`outcome: ${summary.outcome}\n`);
+  process.stdout.write(`processed steps: ${summary.processed_steps}\n`);
+  process.stdout.write(`total duration ms: ${summary.total_duration_ms}\n`);
+  process.stdout.write(`solar input millijoules: ${summary.totals.solar_input_millijoules}\n`);
+  process.stdout.write(`curtailed solar millijoules: ${summary.totals.curtailed_solar_millijoules}\n`);
+  process.stdout.write(`base load millijoules: ${summary.totals.base_load_millijoules}\n`);
+  process.stdout.write(`energy shortfall millijoules: ${summary.totals.energy_shortfall_millijoules}\n`);
+  process.stdout.write(`thermal input millijoules: ${summary.totals.thermal_input_millijoules}\n`);
+  process.stdout.write(`thermal dissipation millijoules: ${summary.totals.thermal_dissipation_millijoules}\n`);
+  process.stdout.write(`thermal excess millijoules: ${summary.totals.thermal_excess_millijoules}\n`);
+  process.stdout.write(`downlink capacity bytes: ${summary.totals.downlink_capacity_bytes}\n`);
+  process.stdout.write(`communications available steps: ${summary.totals.communications_available_steps}\n`);
+  process.stdout.write(`communications unavailable steps: ${summary.totals.communications_unavailable_steps}\n`);
+  if (summary.constraint_summary.length === 0) {
+    process.stdout.write("constraints: none\n");
+  } else {
+    process.stdout.write("constraints:\n");
+    for (const item of summary.constraint_summary) {
+      process.stdout.write(`  ${item.code}: count=${item.count} total_amount_millijoules=${item.total_amount_millijoules}\n`);
+    }
+  }
 }
 
 function writeSuiteJson(result) {
@@ -163,6 +199,44 @@ function runScenario(argv) {
   return result.process_status === "internal_error" ? 3 : 1;
 }
 
+function summarizeScenario(argv) {
+  const [scenarioPath, option, extra] = argv;
+  if (!scenarioPath) {
+    process.stderr.write("Missing scenario path. Use `summarize-scenario <path>` or `summarize-scenario <path> --json`.\n");
+    return 2;
+  }
+  if (extra || (option && option !== "--json")) {
+    process.stderr.write("Unknown summarize-scenario option. Use `summarize-scenario <path>` or `summarize-scenario <path> --json`.\n");
+    return 2;
+  }
+
+  const json = option === "--json";
+  const read = readScenario(scenarioPath);
+  if (!read.ok) {
+    const result = { ok: false, process_status: "invalid_input", summary: null, errors: read.errors };
+    if (json) {
+      writeTraceSummaryJson(result);
+    } else {
+      writeErrors(result.errors);
+    }
+    return 1;
+  }
+
+  const result = summarizeScenarioDocument(read.text);
+  if (json) {
+    writeTraceSummaryJson(result);
+  } else if (!result.ok) {
+    writeErrors(result.errors);
+  } else {
+    writeTraceSummaryText(result.summary);
+  }
+
+  if (result.ok) {
+    return 0;
+  }
+  return result.process_status === "internal_error" ? 3 : 1;
+}
+
 function runSuite(argv) {
   const [suitePath, option, extra] = argv;
   if (!suitePath) {
@@ -221,6 +295,10 @@ function main(argv) {
 
   if (command === "run-scenario") {
     return runScenario(argv.slice(1));
+  }
+
+  if (command === "summarize-scenario") {
+    return summarizeScenario(argv.slice(1));
   }
 
   if (command === "run-suite") {
