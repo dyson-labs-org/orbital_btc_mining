@@ -14,6 +14,7 @@ const requiredFiles = [
   "src/cli.mjs",
   "src/domain/resource-scenario.mjs",
   "src/domain/resource-transition.mjs",
+  "src/domain/resource-trace-summary.mjs",
   "src/domain/scenario-suite.mjs",
   "src/domain/operational-status.mjs",
   "tests/unit/status.test.mjs",
@@ -23,6 +24,8 @@ const requiredFiles = [
   "tests/unit/resource-scenario.test.mjs",
   "tests/unit/resource-scenario-cli.test.mjs",
   "tests/unit/resource-transition.test.mjs",
+  "tests/unit/resource-trace-summary.test.mjs",
+  "tests/unit/resource-trace-summary-cli.test.mjs",
   "tests/unit/resource-run-cli.test.mjs",
   "tests/unit/scenario-suite.test.mjs",
   "tests/unit/scenario-suite-cli.test.mjs",
@@ -39,10 +42,15 @@ const requiredFiles = [
   "docs/architecture/ADR-0006-deterministic-scenario-suites.md",
   "docs/simulation/resource-scenario-v1.md",
   "docs/simulation/resource-transition-v1.md",
+  "docs/simulation/resource-trace-summary-v1.md",
   "docs/simulation/scenario-suite-v1.md",
   "docs/contracts/operational-status-v1.md",
   "scripts/validate-scenario-suites.mjs",
-  "scripts/validate-operational-status.mjs"
+  "scripts/validate-resource-trace-summaries.mjs",
+  "scripts/validate-operational-status.mjs",
+  "fixtures/summaries/nominal-resource-run-summary.v1.json",
+  "fixtures/summaries/energy-deficit-summary.v1.json",
+  "fixtures/summaries/combined-constraints-summary.v1.json"
 ];
 
 const forbiddenActivePaths = [
@@ -261,7 +269,6 @@ if (status) {
     failures.push("status runtime minimum version must be 22");
   }
   const requiredFalseCapabilities = [
-    "resource_trace_summary",
     "simulation_kernel",
     "orbital_resource_model",
     "bitcoin_workload_model",
@@ -279,7 +286,7 @@ if (status) {
     "hardware_control",
     "mission_authority"
   ];
-  for (const capability of ["resource_scenario_contract", "resource_scenario_validation", "deterministic_resource_transition", "scenario_suite_contract", "scenario_suite_runner"]) {
+  for (const capability of ["resource_scenario_contract", "resource_scenario_validation", "deterministic_resource_transition", "scenario_suite_contract", "scenario_suite_runner", "resource_trace_summary"]) {
     if (status.capabilities?.[capability] !== true) {
       failures.push(`status capability must be true: ${capability}`);
     }

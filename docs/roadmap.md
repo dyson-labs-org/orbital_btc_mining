@@ -11,6 +11,7 @@ Implemented capabilities:
 - `resource-scenario.v1` validation;
 - deterministic resource-transition outcomes;
 - `scenario-suite.v1` regression orchestration;
+- `resource-trace-summary.v1` deterministic trace summaries;
 - deterministic status and CLI output;
 - dependency-free local verification.
 
@@ -38,11 +39,11 @@ Outcome: status output, CLI behavior, and verification surfaces consistently exp
 
 ### R3 - Next Meaningful Product Increment
 
-Status: planned
+Status: complete
 
-Outcome: add a representative deterministic product increment, such as richer resource-state transitions or a small local workload fixture, without live external effects.
+Outcome: added deterministic resource-trace summaries over existing transition results without live external effects or transition semantic changes.
 
-Exit gate: committed deterministic fixtures, `.\eng.ps1 verify`, and reviewed evidence that identifies the product capability added and the product surfaces it changes.
+Exit gate: committed deterministic summary fixtures, `.\eng.ps1 verify`, and reviewed evidence identifying the resource-trace-summary capability and changed product surfaces.
 
 ### R4 - Deterministic Failure-State Scenarios
 

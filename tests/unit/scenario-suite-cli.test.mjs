@@ -84,6 +84,7 @@ test("status capability honesty includes suites without overstatement", () => {
   const status = JSON.parse(result.stdout);
   assert.equal(status.capabilities.scenario_suite_contract, true);
   assert.equal(status.capabilities.scenario_suite_runner, true);
+  assert.equal(status.capabilities.resource_trace_summary, true);
   assert.equal(status.capabilities.workload_scheduler, false);
   assert.equal(status.capabilities.bitcoin_workload_model, false);
   assert.equal(status.capabilities.ai_workload_model, false);

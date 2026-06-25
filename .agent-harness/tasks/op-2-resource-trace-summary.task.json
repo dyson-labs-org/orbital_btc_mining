@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0",
+  "task_id": "op-2-resource-trace-summary",
+  "title": "OP-2 Deterministic Resource Trace Summary",
+  "repository": "dyson-labs-org/orbital_btc_mining",
+  "base_commit": "fc995df915e0df62ff602c95517f21b881049391",
+  "harness_source": "634a4eb15d18b25d5b4dfa63c6bb602ea75ad720",
+  "affected_product_surfaces": [
+    "src/domain/resource-trace-summary.mjs",
+    "src/cli.mjs",
+    "src/status.mjs",
+    "src/index.mjs",
+    "scripts/validate-resource-trace-summaries.mjs",
+    "eng.ps1",
+    "node src/cli.mjs summarize-scenario <path>",
+    "node src/cli.mjs summarize-scenario <path> --json"
+  ],
+  "acceptance_criteria": [
+    "resource-trace-summary.v1 is documented",
+    "summary derives from existing resource-transition output",
+    "resource-transition and scenario-suite semantics do not change",
+    "nominal and constrained cases produce exact deterministic summaries",
+    "summary aggregation uses safe-integer arithmetic",
+    "invalid inputs fail consistently",
+    "deterministic text and JSON CLI surfaces exist",
+    "existing run-scenario --json hashes remain unchanged from the OP-1 checkpoint",
+    "existing run-suite --json hashes remain unchanged from the OP-1 checkpoint",
+    "resource_trace_summary becomes true only after implementation and tests",
+    "simulation, scheduler, telemetry, external-network, Bitcoin, AI, wallet, hardware-control, and mission-authority claims remain false",
+    "canonical verification covers the resource trace summary surface",
+    "final evidence is bound to the exact final head",
+    "OP-2 can be reverted independently of the OP-1 checkpoint"
+  ],
+  "required_verification": [
+    "node scripts/validate-resource-trace-summaries.mjs",
+    "node scripts/validate-operational-status.mjs",
+    "node --test",
+    "pwsh -NoProfile -File .\\eng.ps1 verify",
+    "git diff --check"
+  ],
+  "non_goals": [
+    "changing resource-transition semantics",
+    "changing scenario-suite semantics",
+    "simulation kernel",
+    "scheduler",
+    "telemetry ingestion",
+    "Bitcoin workload",
+    "AI workload",
+    "wallet",
+    "external network behavior",
+    "provider or adapter activation",
+    "package release"
+  ],
+  "external_side_effect_boundaries": [
+    "no credentials or secrets",
+    "no live providers or adapters",
+    "no external services",
+    "no production deployment",
+    "no wallet, payment, or real mining behavior",
+    "no canonical KB writes",
+    "no mutation of legacy/pre-orbital-compute-lab"
+  ],
+  "rollback_method": "Revert the OP-2 commit range after fc995df915e0df62ff602c95517f21b881049391 and rerun pwsh -NoProfile -File .\\eng.ps1 verify to return to the reviewed OP-1 checkpoint.",
+  "evidence_expectations": [
+    "OP-1 checkpoint evidence remains available under .agent-harness/artifacts/op-1-op-2/op-1-checkpoint/",
+    "final OP-2 evidence under .agent-harness/artifacts/op-1-op-2/final/",
+    "installed-harness evidence generated from harness 634a4eb15d18b25d5b4dfa63c6bb602ea75ad720",
+    "terminal scan raw-root, encoded-root, sentinel, and scanner-error counts are zero",
+    "scenario and suite output hash comparisons are recorded"
+  ],
+  "c3_harness_004_disposition": "open / accepted_for_offline_v0.2; not fixed, passed, or closed by OP-2"
+}

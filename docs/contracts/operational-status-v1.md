@@ -81,6 +81,16 @@ At the OP-1 checkpoint, the true capability set is exactly:
 At the OP-1 checkpoint, `resource_trace_summary` is present and false. All other capabilities are false.
 
 A later reviewed implementation may change the truth matrix without changing this status schema, but a capability may become true only in the same reviewed commit range that implements and verifies that capability.
+After the reviewed resource-trace-summary implementation, the true capability set is exactly:
+
+- `resource_scenario_contract`
+- `resource_scenario_validation`
+- `deterministic_resource_transition`
+- `scenario_suite_contract`
+- `scenario_suite_runner`
+- `resource_trace_summary`
+
+The capability truth matrix is tied to the committed implementation and verification surface. All remaining capabilities are false.
 
 ## Validation
 

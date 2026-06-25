@@ -52,10 +52,12 @@ function New-Summary {
         scenario_fixtures = Get-CheckStatus -Checks $Checks -Name "node scripts/validate-resource-scenarios.mjs"
         expected_negative_tests = Get-CheckStatus -Checks $Checks -Name "expected invalid scenario fixture"
         resource_transition = Get-CheckStatus -Checks $Checks -Name "node scripts/validate-resource-transitions.mjs"
+        resource_trace_summary = Get-CheckStatus -Checks $Checks -Name "node scripts/validate-resource-trace-summaries.mjs"
         nominal_domain_outcome = Get-CheckStatus -Checks $Checks -Name "nominal resource transition run"
         constraint_domain_outcome = Get-CheckStatus -Checks $Checks -Name "constraint resource transition run"
         expected_invalid_run_tests = Get-CheckStatus -Checks $Checks -Name "expected invalid transition run"
         deterministic_transition_json = Get-CheckStatus -Checks $Checks -Name "deterministic transition JSON comparison"
+        trace_summary_execution = Get-CheckStatus -Checks $Checks -Name "resource trace summary CLI run"
         scenario_suite_contract = Get-CheckStatus -Checks $Checks -Name "node scripts/validate-scenario-suites.mjs"
         scenario_suite_runner = Get-CheckStatus -Checks $Checks -Name "node scripts/validate-scenario-suites.mjs"
         suite_execution = Get-CheckStatus -Checks $Checks -Name "valid scenario suite run"
@@ -189,6 +191,11 @@ try {
             }
             if ($checks[-1].status -eq "failed") { ConvertTo-StatusJson (New-Summary -CommandName "verify" -Checks $checks); exit $checks[-1].exit_code }
 
+            $checks += Invoke-Check -Name "node scripts/validate-resource-trace-summaries.mjs" -Action {
+                & node scripts/validate-resource-trace-summaries.mjs
+            }
+            if ($checks[-1].status -eq "failed") { ConvertTo-StatusJson (New-Summary -CommandName "verify" -Checks $checks); exit $checks[-1].exit_code }
+
             $checks += Invoke-Check -Name "node scripts/validate-scenario-suites.mjs" -Action {
                 & node scripts/validate-scenario-suites.mjs
             }
@@ -219,6 +226,7 @@ try {
                         $status.capabilities.deterministic_resource_transition -ne $true -or
                         $status.capabilities.scenario_suite_contract -ne $true -or
                         $status.capabilities.scenario_suite_runner -ne $true -or
+                        $status.capabilities.resource_trace_summary -ne $true -or
                         $status.capabilities.simulation_kernel -ne $false -or
                         $status.capabilities.workload_scheduler -ne $false -or
                         $status.capabilities.bitcoin_workload_model -ne $false -or
@@ -308,6 +316,30 @@ try {
                 }
             }
             $checks += $constraintRun
+            if ($checks[-1].status -eq "failed") { ConvertTo-StatusJson (New-Summary -CommandName "verify" -Checks $checks -TestCount $testCount); exit $checks[-1].exit_code }
+
+            $traceSummary = Invoke-Check -Name "resource trace summary CLI run" -Action {
+                & node src/cli.mjs summarize-scenario fixtures/runs/nominal-resource-run.v1.json --json
+            }
+            if ($traceSummary.status -eq "passed") {
+                try {
+                    $payload = ($traceSummary.output -join "`n") | ConvertFrom-Json
+                    if ($payload.ok -ne $true -or
+                        $payload.summary.schema_version -ne "resource-trace-summary.v1" -or
+                        $payload.summary.scenario_id -ne "nominal-resource-run" -or
+                        $payload.summary.outcome -ne "completed" -or
+                        $payload.summary.total_duration_ms -ne 2000) {
+                        $traceSummary.status = "failed"
+                        $traceSummary.exit_code = 1
+                        $traceSummary.output += "Trace summary did not produce the expected nominal summary."
+                    }
+                } catch {
+                    $traceSummary.status = "failed"
+                    $traceSummary.exit_code = 1
+                    $traceSummary.output += "Trace summary JSON could not be parsed."
+                }
+            }
+            $checks += $traceSummary
             if ($checks[-1].status -eq "failed") { ConvertTo-StatusJson (New-Summary -CommandName "verify" -Checks $checks -TestCount $testCount); exit $checks[-1].exit_code }
 
             $validSuite = Invoke-Check -Name "valid scenario suite run" -Action {
@@ -420,7 +452,7 @@ try {
         "help" {
             "Usage: .\eng.ps1 bootstrap | verify | help"
             "bootstrap: checks Git, PowerShell, Node.js 22+, and legacy-source documentation without installing dependencies or creating artifacts."
-            "verify: runs bootstrap, git diff --check, operational-pilot validation, active-tree boundary validation, operational-status validation, resource-scenario validation, resource-transition validation, node --test, status CLI, representative scenario CLI checks, and representative transition CLI checks."
+            "verify: runs bootstrap, git diff --check, operational-pilot validation, active-tree boundary validation, operational-status validation, resource-scenario validation, resource-transition validation, resource-trace-summary validation, node --test, status CLI, representative scenario CLI checks, representative transition CLI checks, and representative trace-summary CLI checks."
             "No simulation kernel, scheduler, Bitcoin, AI, wallet, trading, network, hardware, or mission-authority behavior is verified or implemented."
             exit 0
         }

@@ -47,7 +47,7 @@ export const OPERATIONAL_STATUS_EXPECTED_CAPABILITIES = Object.freeze({
   deterministic_resource_transition: true,
   scenario_suite_contract: true,
   scenario_suite_runner: true,
-  resource_trace_summary: false,
+  resource_trace_summary: true,
   simulation_kernel: false,
   orbital_resource_model: false,
   workload_scheduler: false,

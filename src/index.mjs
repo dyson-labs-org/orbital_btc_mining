@@ -15,6 +15,15 @@ export {
   validateScenarioDocument
 } from "./domain/resource-scenario.mjs";
 export {
+  RESOURCE_TRACE_SUMMARY_RUN_SCHEMA_VERSION,
+  RESOURCE_TRACE_SUMMARY_SCHEMA_VERSION,
+  RESOURCE_TRACE_TOTAL_FIELDS,
+  summarizeResourceScenario,
+  summarizeScenarioDocument,
+  summarizeTransitionResult,
+  traceSummaryPayload
+} from "./domain/resource-trace-summary.mjs";
+export {
   runResourceScenario,
   runScenarioDocument,
   transitionResultPayload

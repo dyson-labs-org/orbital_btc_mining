@@ -2,7 +2,7 @@
 
 Orbital Compute Lab is the operational pilot and controlled test range for the provider-neutral Agent Engineering Harness. The active tree remains local, deterministic, and non-production while the pilot exercises task contracts, repository-owned verification, sanitized evidence, independent review, and rollback.
 
-Status: operational pilot activation with deterministic resource-scenario validation, resource transitions, and scenario-suite regression orchestration.
+Status: operational pilot activation with deterministic resource-scenario validation, resource transitions, resource-trace summaries, and scenario-suite regression orchestration.
 
 Product stage: controlled test range.
 
@@ -10,7 +10,7 @@ Dependency installation: not required.
 
 External service calls during verification: none.
 
-The active product tree contains dependency-free Node.js product metadata, an honest status CLI, resource-scenario validation, a deterministic resource-transition engine, a scenario-suite runner, tests, and documentation. It does not implement a simulation kernel, scheduler, Bitcoin workload, AI workload, wallet, trading behavior, hosted AI behavior, network behavior, hardware control, production deployment, or mission authority.
+The active product tree contains dependency-free Node.js product metadata, an honest status CLI, resource-scenario validation, a deterministic resource-transition engine, deterministic resource-trace summaries, a scenario-suite runner, tests, and documentation. It does not implement a simulation kernel, scheduler, Bitcoin workload, AI workload, wallet, trading behavior, hosted AI behavior, network behavior, hardware control, production deployment, or mission authority.
 
 ## Golden Commands
 
@@ -20,9 +20,11 @@ The active product tree contains dependency-free Node.js product metadata, an ho
 node scripts/validate-operational-pilot.mjs
 node scripts/validate-active-tree-boundaries.mjs
 node scripts/validate-operational-status.mjs
+node scripts/validate-resource-trace-summaries.mjs
 node --test
 node src/cli.mjs status
 node src/cli.mjs status --json
+node src/cli.mjs summarize-scenario fixtures/runs/nominal-resource-run.v1.json --json
 node src/cli.mjs run-suite fixtures/suites/core-resource-regression.v1.json --json
 node src/cli.mjs run-suite fixtures/suites/constraint-regression.v1.json --json
 git diff --check
@@ -39,12 +41,14 @@ node src/cli.mjs validate-scenario fixtures/scenarios/minimal-sunlit.v1.json
 node src/cli.mjs validate-scenario fixtures/scenarios/minimal-sunlit.v1.json --json
 node src/cli.mjs run-scenario fixtures/runs/nominal-resource-run.v1.json
 node src/cli.mjs run-scenario fixtures/runs/energy-deficit.v1.json --json
+node src/cli.mjs summarize-scenario fixtures/runs/nominal-resource-run.v1.json
+node src/cli.mjs summarize-scenario fixtures/runs/energy-deficit.v1.json --json
 node src/cli.mjs run-suite fixtures/suites/core-resource-regression.v1.json
 node src/cli.mjs run-suite fixtures/suites/constraint-regression.v1.json --json
 node src/cli.mjs help
 ```
 
-The CLI output is deterministic. It reports only the resource-scenario contract, validation, deterministic transition, and scenario-suite capabilities as implemented; simulation, scheduler, Bitcoin, AI, wallet, trading, network, hardware, and mission-authority capabilities remain false.
+The CLI output is deterministic. It reports only the resource-scenario contract, validation, deterministic transition, resource-trace summary, and scenario-suite capabilities as implemented; simulation, scheduler, Bitcoin, AI, wallet, trading, network, hardware, and mission-authority capabilities remain false.
 
 ## Canonical Documents
 
@@ -59,6 +63,7 @@ The CLI output is deterministic. It reports only the resource-scenario contract,
 - [Research assumptions](docs/research-assumptions.md)
 - [Resource scenario v1](docs/simulation/resource-scenario-v1.md)
 - [Resource transition v1](docs/simulation/resource-transition-v1.md)
+- [Resource trace summary v1](docs/simulation/resource-trace-summary-v1.md)
 - [Scenario suite v1](docs/simulation/scenario-suite-v1.md)
 - [Operational status v1](docs/contracts/operational-status-v1.md)
 

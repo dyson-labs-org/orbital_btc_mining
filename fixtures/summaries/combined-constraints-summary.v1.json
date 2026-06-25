@@ -1,0 +1,37 @@
+{
+  "schema_version": "resource-trace-summary.v1",
+  "scenario_id": "combined-constraints",
+  "outcome": "constraint_violation",
+  "processed_steps": 1,
+  "total_duration_ms": 1000,
+  "totals": {
+    "solar_input_millijoules": 0,
+    "curtailed_solar_millijoules": 0,
+    "base_load_millijoules": 50,
+    "energy_shortfall_millijoules": 30,
+    "thermal_input_millijoules": 15,
+    "thermal_dissipation_millijoules": 0,
+    "thermal_excess_millijoules": 10,
+    "downlink_capacity_bytes": 0,
+    "communications_available_steps": 0,
+    "communications_unavailable_steps": 1
+  },
+  "final_state": {
+    "battery_energy_millijoules": 0,
+    "battery_capacity_millijoules": 100,
+    "thermal_load_millijoules": 100,
+    "thermal_capacity_millijoules": 100
+  },
+  "constraint_summary": [
+    {
+      "code": "ENERGY_DEFICIT",
+      "count": 1,
+      "total_amount_millijoules": 30
+    },
+    {
+      "code": "THERMAL_CAPACITY_EXCEEDED",
+      "count": 1,
+      "total_amount_millijoules": 10
+    }
+  ]
+}

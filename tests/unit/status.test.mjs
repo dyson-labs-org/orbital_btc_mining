@@ -15,7 +15,7 @@ test("status metadata is deterministic and honest", () => {
   assert.equal(statusJson(), statusJson());
 });
 
-test("only resource and scenario-suite capabilities are true", () => {
+test("only implemented local resource capabilities are true", () => {
   const capabilities = getStatus().capabilities;
   for (const [name, value] of Object.entries(capabilities)) {
     const expected = [
@@ -23,7 +23,8 @@ test("only resource and scenario-suite capabilities are true", () => {
       "resource_scenario_validation",
       "deterministic_resource_transition",
       "scenario_suite_contract",
-      "scenario_suite_runner"
+      "scenario_suite_runner",
+      "resource_trace_summary"
     ].includes(name);
     assert.equal(value, expected, `${name} capability mismatch`);
   }

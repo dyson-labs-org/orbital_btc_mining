@@ -1,0 +1,26 @@
+{
+  "schema_version": "resource-trace-summary.v1",
+  "scenario_id": "nominal-resource-run",
+  "outcome": "completed",
+  "processed_steps": 2,
+  "total_duration_ms": 2000,
+  "totals": {
+    "solar_input_millijoules": 500,
+    "curtailed_solar_millijoules": 0,
+    "base_load_millijoules": 250,
+    "energy_shortfall_millijoules": 0,
+    "thermal_input_millijoules": 70,
+    "thermal_dissipation_millijoules": 50,
+    "thermal_excess_millijoules": 0,
+    "downlink_capacity_bytes": 1024,
+    "communications_available_steps": 1,
+    "communications_unavailable_steps": 1
+  },
+  "final_state": {
+    "battery_energy_millijoules": 750,
+    "battery_capacity_millijoules": 1000,
+    "thermal_load_millijoules": 120,
+    "thermal_capacity_millijoules": 500
+  },
+  "constraint_summary": []
+}

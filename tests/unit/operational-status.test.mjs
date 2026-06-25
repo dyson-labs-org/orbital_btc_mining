@@ -103,7 +103,8 @@ test("rejects implemented capabilities changed to false", () => {
     "resource_scenario_validation",
     "deterministic_resource_transition",
     "scenario_suite_contract",
-    "scenario_suite_runner"
+    "scenario_suite_runner",
+    "resource_trace_summary"
   ]) {
     assertInvalid((status) => { status.capabilities[key] = false; }, "dishonest_capability", `$.capabilities.${key}`);
   }
@@ -111,7 +112,6 @@ test("rejects implemented capabilities changed to false", () => {
 
 test("rejects unimplemented capabilities changed to true", () => {
   for (const key of [
-    "resource_trace_summary",
     "simulation_kernel",
     "workload_scheduler",
     "bitcoin_workload_model",
