@@ -8,8 +8,71 @@ const reportPath = ".agent-harness/artifacts/op-3-failure-recovery/op-3-failure-
 const timingPath = ".agent-harness/artifacts/op-3-failure-recovery/op-3-failure-recovery-timing.v1.json";
 const tmpRoot = ".agent-harness/tmp/op-3-failure-recovery";
 const redirectTarget = ".agent-harness/artifacts/op-3-failure-recovery/redirect-target";
+const pathGuardSandbox = ".agent-harness/artifacts/op-3-failure-recovery/path-guard-sandbox";
+const repoRoot = process.cwd();
+const repoRootAbsolute = path.resolve(repoRoot);
+const repoRootReal = fs.realpathSync.native(repoRootAbsolute);
+
+function sameFilesystemPath(left, right) {
+  const normalize = process.platform === "win32"
+    ? (value) => path.normalize(value).toLowerCase()
+    : (value) => path.normalize(value);
+  return normalize(left) === normalize(right);
+}
+
+function isWithin(parent, child) {
+  const relative = path.relative(parent, child);
+  return relative === "" || (!relative.startsWith("..") && !path.isAbsolute(relative));
+}
+
+function displayPath(absolutePath) {
+  return path.relative(repoRootAbsolute, absolutePath).replaceAll("\\", "/") || ".";
+}
+
+function assertSafeExistingParents(label, target) {
+  const absolutePath = path.resolve(repoRootAbsolute, target);
+  assert.equal(isWithin(repoRootAbsolute, absolutePath), true, `${label} must stay within the repository root`);
+  const parent = path.dirname(absolutePath);
+  const relativeParent = path.relative(repoRootAbsolute, parent);
+  if (relativeParent === "") {
+    return;
+  }
+
+  let current = repoRootAbsolute;
+  for (const part of relativeParent.split(path.sep)) {
+    current = path.join(current, part);
+    let stat = null;
+    try {
+      stat = fs.lstatSync(current);
+    } catch (error) {
+      if (error.code === "ENOENT") {
+        break;
+      }
+      throw error;
+    }
+    assert.equal(stat.isSymbolicLink(), false, `${label} parent has a symlink or reparse-point component: ${displayPath(current)}`);
+    const real = fs.realpathSync.native(current);
+    const expectedReal = path.join(repoRootReal, path.relative(repoRootAbsolute, current));
+    assert.equal(
+      sameFilesystemPath(real, expectedReal),
+      true,
+      `${label} parent resolves outside the lexical repository path: ${displayPath(current)}`
+    );
+  }
+}
+
+function mkdirSafe(target) {
+  assertSafeExistingParents("test mkdir target", target);
+  fs.mkdirSync(target, { recursive: true });
+}
+
+function writeFileSafe(target, contents) {
+  assertSafeExistingParents("test write target", target);
+  fs.writeFileSync(target, contents);
+}
 
 function removePathOrLink(target) {
+  assertSafeExistingParents("test cleanup target", target);
   try {
     const stat = fs.lstatSync(target);
     if (!stat.isSymbolicLink()) {
@@ -37,6 +100,12 @@ function runValidator() {
     encoding: "utf8",
     env: { PATH: process.env.PATH ?? "" }
   });
+}
+
+function assertNoMachineLocalPath(text) {
+  assert.equal(text.includes(repoRootAbsolute), false);
+  assert.equal(text.includes(repoRootAbsolute.replaceAll("\\", "/")), false);
+  assert.equal(text.includes("file://"), false);
 }
 
 test("OP-3 failure recovery validator produces the expected diagnosis and rollback proof", () => {
@@ -70,29 +139,62 @@ test("OP-3 failure recovery validator produces the expected diagnosis and rollba
 
 test("OP-3 validator rejects redirected disposable state before mutation", (t) => {
   removePathOrLink(tmpRoot);
-  fs.rmSync(redirectTarget, { recursive: true, force: true });
-  fs.mkdirSync(path.dirname(tmpRoot), { recursive: true });
-  fs.mkdirSync(redirectTarget, { recursive: true });
+  removePathOrLink(redirectTarget);
+  mkdirSafe(path.dirname(tmpRoot));
+  mkdirSafe(redirectTarget);
   const sentinel = path.join(redirectTarget, "sentinel.txt");
-  fs.writeFileSync(sentinel, "keep\n");
+  writeFileSafe(sentinel, "keep\n");
 
   try {
     fs.symlinkSync(path.resolve(redirectTarget), tmpRoot, process.platform === "win32" ? "junction" : "dir");
   } catch (error) {
-    fs.rmSync(redirectTarget, { recursive: true, force: true });
+    removePathOrLink(redirectTarget);
     t.skip(`directory symlink unavailable: ${error.code ?? error.message}`);
     return;
   }
 
   try {
     const result = runValidator();
+    const diagnostic = result.stderr + result.stdout;
     assert.notEqual(result.status, 0, result.stdout);
-    assert.match(result.stderr + result.stdout, /unsafe OP-3 path configuration|symlink|reparse-point/);
+    assert.match(diagnostic, /unsafe OP-3 path configuration|symlink|reparse-point/);
+    assertNoMachineLocalPath(diagnostic);
     assert.equal(fs.readFileSync(sentinel, "utf8"), "keep\n");
   } finally {
     removePathOrLink(tmpRoot);
     assert.equal(fs.existsSync(sentinel), true);
-    fs.rmSync(redirectTarget, { recursive: true, force: true });
+    removePathOrLink(redirectTarget);
+  }
+});
+
+test("OP-3 test path guard rejects redirected parents before cleanup mutation", (t) => {
+  removePathOrLink(pathGuardSandbox);
+  mkdirSafe(pathGuardSandbox);
+  const parentRedirect = path.join(pathGuardSandbox, "redirected-parent");
+  const parentTarget = path.join(pathGuardSandbox, "parent-target");
+  mkdirSafe(parentTarget);
+  const sentinel = path.join(parentTarget, "sentinel.txt");
+  writeFileSafe(sentinel, "keep\n");
+
+  try {
+    fs.symlinkSync(path.resolve(parentTarget), parentRedirect, process.platform === "win32" ? "junction" : "dir");
+  } catch (error) {
+    removePathOrLink(parentTarget);
+    removePathOrLink(pathGuardSandbox);
+    t.skip(`directory symlink unavailable: ${error.code ?? error.message}`);
+    return;
+  }
+
+  try {
+    assert.throws(
+      () => removePathOrLink(path.join(parentRedirect, "child.txt")),
+      /symlink|reparse-point|resolves outside/
+    );
+    assert.equal(fs.readFileSync(sentinel, "utf8"), "keep\n");
+  } finally {
+    removePathOrLink(parentRedirect);
+    removePathOrLink(parentTarget);
+    removePathOrLink(pathGuardSandbox);
   }
 });
 

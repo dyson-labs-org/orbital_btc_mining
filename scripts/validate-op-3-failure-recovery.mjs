@@ -551,4 +551,18 @@ function main() {
   return finalReport.status === "passed" ? 0 : 1;
 }
 
-process.exitCode = main();
+function sanitizedDiagnostic(error) {
+  const message = error instanceof Error ? error.message : String(error);
+  return message
+    .replaceAll(rootAbsolute, ".")
+    .replaceAll(rootAbsolute.replaceAll("\\", "/"), ".")
+    .replaceAll(rootReal, ".")
+    .replaceAll(rootReal.replaceAll("\\", "/"), ".");
+}
+
+try {
+  process.exitCode = main();
+} catch (error) {
+  process.stderr.write(`${sanitizedDiagnostic(error)}\n`);
+  process.exitCode = 1;
+}
