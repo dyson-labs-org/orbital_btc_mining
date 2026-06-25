@@ -1,151 +1,61 @@
 # Roadmap
 
-Orbital Compute Lab advances through incubation gates. Passing one gate does not
-imply operational readiness.
+Orbital Compute Lab is a controlled test range for deterministic, offline resource-accounting product work. This roadmap tracks product capability only; the pilot charter lives in [docs/operational-pilot.md](operational-pilot.md).
 
-## I0 - Audit/Re-charter
+## Current Product Stage
 
-Status: merged.
+Status: `controlled_test_range`
 
-Outcome: preserved the legacy baseline, documented risks, defined the product
-charter, added safety boundaries, established harness verification, and kept
-legacy runtime commands `not_run`.
+Implemented capabilities:
 
-Exit gate: local charter validator and harness checks passed before merge.
+- `resource-scenario.v1` validation;
+- deterministic resource-transition outcomes;
+- `scenario-suite.v1` regression orchestration;
+- deterministic status and CLI output;
+- dependency-free local verification.
 
-## I0.5 - Legacy Isolation and Clean Product Skeleton
+Not implemented: simulation kernel, workload scheduler, profitability model, Bitcoin workload, AI workload, wallet, trading, telemetry, external network behavior, hardware control, production deployment, and mission authority.
 
-Status: complete.
+## Capability Sequence
 
-Outcome: removed legacy implementation from active main while preserving it on
-`legacy/pre-orbital-compute-lab`, add a dependency-free Node.js skeleton, expose
-an honest deterministic status CLI, and verify offline on Windows and Ubuntu.
+### R0 - Legacy Preservation
 
-Exit criteria:
+Status: complete
 
-- legacy source preserved by immutable branch reference;
-- legacy implementation absent from active product tree;
-- clean dependency-free package skeleton;
-- deterministic status CLI;
-- offline Windows and Ubuntu verification;
-- no external service;
-- no product behavior beyond metadata/status;
-- independent large-deletion review;
-- CI passing;
-- human approval and merge.
+Outcome: legacy source is removed from active main and preserved on `legacy/pre-orbital-compute-lab` at `c93c7366edcd86b83896c3c39b753805183c3126` for read-only inspection.
 
-## I1 - Deterministic Simulation Kernel
+### R1 - Deterministic Resource Contracts
 
-Status: not_started.
+Status: complete
 
-Outcome: introduce a minimal offline simulation kernel with deterministic input
-fixtures, expected outputs, and uncertainty notes.
+Outcome: `resource-scenario.v1`, resource-transition results, and scenario-suite fixtures validate deterministic local behavior without external calls.
 
-Exit gate: repeatable tests verify kernel behavior without external calls.
+### R2 - Controlled Test Range Surface
 
-### I1A - Deterministic Resource-Scenario Contract
+Status: in_progress
 
-Status: complete.
+Outcome: status output, CLI behavior, and verification surfaces consistently expose Orbital as a controlled local test range with deterministic resource-accounting capability only.
 
-Outcome: define `resource-scenario.v1`, deterministic fixture validation, and a
-CLI validation surface for future simulation inputs.
+### R3 - Next Meaningful Product Increment
 
-Boundary: I1A does not implement the simulation kernel, scheduler, Bitcoin
-workloads, AI workloads, telemetry, orbital propagation, optimization, wallet
-behavior, network behavior, hardware control, or mission authority.
+Status: planned
 
-Exit gate: local verification and review packet evidence show deterministic
-validation, honest status metadata, expected-negative fixtures, no dependencies,
-and no provider or adapter requirement.
+Outcome: add a representative deterministic product increment, such as richer resource-state transitions or a small local workload fixture, without live external effects.
 
-### I1B - Deterministic Resource Transitions
+Exit gate: committed deterministic fixtures, `.\eng.ps1 verify`, and reviewed evidence that identifies the product capability added and the product surfaces it changes.
 
-Status: complete.
+### R4 - Deterministic Failure-State Scenarios
 
-Outcome: run validated `resource-scenario.v1` inputs through deterministic
-electrical and thermal resource transitions with typed `completed` and
-`constraint_violation` domain outcomes.
+Status: planned
 
-Boundary: I1B does not implement the full simulation kernel, scheduler, Bitcoin
-workloads, AI workloads, profitability, optimization, telemetry, orbital
-propagation, wallet behavior, network behavior, provider behavior, hardware
-control, or mission authority.
+Outcome: add local fixtures that model recoverable resource deficits, constraint failures, and state reconciliation without external effects.
 
-Exit gate: local verification and harness evidence show deterministic transition
-results, domain-negative outcomes distinct from process failures, redaction,
-tamper, stale-binding, reproducibility, candidate-lifecycle, and review-packet
-checks without dependencies, provider, adapter, or network requirement.
+### R5 - Product Direction Decision
 
-### I1C - Deterministic Scenario Suites
+Status: planned
 
-Status: in_progress_pending_merge.
+Outcome: decide whether to continue toward a larger local simulation product, archive the lab, or re-scope it after the operational-pilot retrospective.
 
-Outcome: define `scenario-suite.v1` and a deterministic runner that executes
-existing resource-transition scenarios in declared order and compares domain
-outcomes with explicit expectations.
+## Capability Boundaries
 
-Boundary: I1C does not implement the full simulation kernel, scheduler, Bitcoin
-workloads, AI workloads, profitability, optimization, telemetry, orbital
-propagation, wallet behavior, network behavior, provider behavior, hardware
-control, or mission authority.
-
-Current gate evidence: local product verification shows deterministic suite
-execution, expected constraint outcomes, expectation-mismatch failures, and
-capability honesty without dependencies, provider, adapter, KB, or network
-requirement. Harness Cycle 3 evaluation failed because raw path text persisted
-in red-phase evidence and omitted required supplement entries were not detected.
-I1C remains pending review and merge; full I1 remains incomplete.
-
-## I2 - Workload/Scheduler
-
-Status: not_started.
-
-Outcome: model workload windows, power limits, thermal limits, and scheduling
-decisions without provider integrations.
-
-Exit gate: scheduler fixtures cover nominal, constrained, and infeasible cases.
-
-## I3 - Explainability/Telemetry
-
-Status: not_started.
-
-Outcome: produce explainable traces for assumptions, intermediate values,
-warnings, and confidence limits.
-
-Exit gate: every user-visible result can be traced to fixture inputs and model
-steps.
-
-## I4 - Optional Local AI Advisor Evaluation
-
-Status: not_started.
-
-Outcome: evaluate whether a local-only advisor can summarize assumptions and
-risks without changing source-of-truth calculations.
-
-Exit gate: advisor is optional, offline, reproducible, and never required for
-verification.
-
-## I5 - Incubation Demonstrator
-
-Status: not_started.
-
-Outcome: assemble the kernel, scheduler, and telemetry into an offline demo that
-shows the concept without deployment, mining, payments, or live services.
-
-Exit gate: demo evidence shows deterministic local operation and clear
-non-operational labeling.
-
-## 1.0 Decision Gate
-
-Status: not_started.
-
-Outcome: decide whether to continue, archive, or re-scope the lab.
-
-Required before 1.0:
-
-- Clean license provenance.
-- Privacy history review.
-- Reviewed model assumptions and fixtures.
-- Active maintenance owner.
-- Security review of any retained or recovered legacy code.
-- Decision on whether any operational pilot is appropriate.
+Product capability claims require committed implementation, local tests, `.\eng.ps1 verify`, and reviewed evidence. This roadmap does not authorize live provider access, production deployment, real mining, payments, wallets, direct databases, canonical KB writes, or mutation of the preserved legacy branch.

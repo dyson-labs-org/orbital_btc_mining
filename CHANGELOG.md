@@ -2,24 +2,12 @@
 
 ## Unreleased
 
-- Isolate legacy source from active main while preserving it on
-  `legacy/pre-orbital-compute-lab`.
-- Add a dependency-free Orbital Compute Lab Node.js skeleton and deterministic
-  status CLI.
-- Add I0.5 validation for no dependencies, no network behavior, no subprocess
-  behavior, no simulation kernel, no Bitcoin behavior, and no AI behavior.
-- Add the I1A `resource-scenario.v1` contract, deterministic validator, CLI
-  validation command, fixtures, and expected-negative verification.
-- Record harness evaluation cycle 1 as `pass_with_findings` with product and
-  harness results separated.
-- Add the I1B deterministic resource-transition engine, typed domain outcomes,
-  run fixtures, CLI run command, canonical verification checks, and Cycle 2
-  preregistration.
-- Record harness evaluation cycle 2 as `pass_with_findings`, with product
-  behavior separated from harness integrity and evidence-packaging findings.
-- Add the I1C `scenario-suite.v1` contract, deterministic suite runner, suite
-  fixtures, CLI run-suite command, canonical verification checks, and Cycle 3
-  preregistration.
-- Record harness evaluation cycle 3 as `fail`: the I1C product vessel passed
-  local verification, while harness remediation gates for path hygiene and
-  required review-bundle supplement omission remained open.
+- Activate Orbital as the operational pilot and controlled test range for the provider-neutral harness.
+- Consolidate active charter, safety, roadmap, and historical harness-evaluation records into canonical documents.
+- Rename stale validators to `validate-operational-pilot.mjs` and `validate-active-tree-boundaries.mjs` while preserving deterministic product behavior.
+- Keep C3-HARNESS-004 open / accepted_for_offline_v0.2 for local-only OP-0 through OP-4 work.
+
+## Historical
+
+- Isolated legacy source from active main while preserving it on `legacy/pre-orbital-compute-lab`.
+- Added dependency-free Node.js status, resource-scenario validation, resource transitions, and scenario-suite regression orchestration.

@@ -12,7 +12,8 @@ test("status --json emits only deterministic status JSON", () => {
   assert.equal(first, second);
   const parsed = JSON.parse(first);
   assert.equal(parsed.product_name, "Orbital Compute Lab");
-  assert.equal(parsed.implementation_status, "skeleton");
+  assert.equal(parsed.maturity, "operational_pilot");
+  assert.equal(parsed.implementation_status, "controlled_test_range");
   assert.equal(parsed.capabilities.resource_scenario_contract, true);
   assert.equal(parsed.capabilities.resource_scenario_validation, true);
   assert.equal(parsed.capabilities.deterministic_resource_transition, true);
@@ -26,6 +27,8 @@ test("status text and help do not overstate implementation", () => {
   const status = execFileSync(process.execPath, ["src/cli.mjs", "status"], {
     encoding: "utf8"
   });
+  assert.match(status, /status: controlled_test_range/);
+  assert.match(status, /maturity: operational_pilot/);
   assert.match(status, /simulation: not implemented/);
   assert.match(status, /resource scenario contract: implemented/);
   assert.match(status, /deterministic resource transition: implemented/);
@@ -37,6 +40,7 @@ test("status text and help do not overstate implementation", () => {
   const help = execFileSync(process.execPath, ["src/cli.mjs", "help"], {
     encoding: "utf8"
   });
+  assert.match(help, /operational-pilot status/);
   assert.match(help, /No simulation kernel/);
 });
 

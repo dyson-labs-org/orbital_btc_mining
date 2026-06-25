@@ -5,31 +5,37 @@ import test from "node:test";
 
 const baselineSha = "c93c7366edcd86b83896c3c39b753805183c3126";
 
-test("charter validator passes", () => {
-  const output = execFileSync(process.execPath, ["scripts/validate-incubation-charter.mjs"], {
+function read(path) {
+  return fs.readFileSync(path, "utf8");
+}
+
+test("operational pilot validator passes", () => {
+  const output = execFileSync(process.execPath, ["scripts/validate-operational-pilot.mjs"], {
     encoding: "utf8"
   });
   const summary = JSON.parse(output);
   assert.equal(summary.status, "passed");
-  assert.equal(summary.charter_status, "incubation");
+  assert.equal(summary.pilot_status, "operational_pilot");
+  assert.equal(summary.active_tree_status, "controlled_test_range");
   assert.equal(summary.legacy_source, "not_run");
   assert.equal(summary.external_calls, "none");
-  assert.equal(summary.product_implementation, "skeleton");
+  assert.equal(summary.project_json, "not_created");
 });
 
-test("task contract records incubation status and project-json gap", () => {
-  const task = JSON.parse(fs.readFileSync(".agent-harness/tasks/i0-audit-recharter.task.json", "utf8"));
-  assert.equal(task.baseline_sha, baselineSha);
-  assert.equal(task.preserved_branch, "legacy/pre-orbital-compute-lab");
-  assert.equal(task.work_branch, "incubation/orbital-compute-lab-charter");
-  assert.equal(task.classification, "incubation");
-  assert.equal(task.release_gate, "I0 Audit/Re-charter");
-  assert.equal(task.project_json.status, "not_created");
+test("project-json remains absent and active docs do not require it", () => {
   assert.equal(fs.existsSync(".agent-harness/project.json"), false);
+  const docs = [
+    read("README.md"),
+    read("AGENTS.md"),
+    read(".agent-harness/README.md"),
+    read("docs/operational-pilot.md")
+  ].join("\n");
+  assert.match(docs, /No consumed schema exists/);
+  assert.doesNotMatch(docs, /required project schema|initial-pilot requirement/);
 });
 
 test("eng verify surface remains offline and bounded", () => {
-  const eng = fs.readFileSync("eng.ps1", "utf8");
+  const eng = read("eng.ps1");
   const invocationLines = eng
     .split(/\r?\n/)
     .map((line) => line.trim())
@@ -38,8 +44,8 @@ test("eng verify surface remains offline and bounded", () => {
     "& git --version",
     "& node --version",
     "& git diff --check",
-    "& node scripts/validate-incubation-charter.mjs",
-    "& node scripts/validate-clean-skeleton.mjs",
+    "& node scripts/validate-operational-pilot.mjs",
+    "& node scripts/validate-active-tree-boundaries.mjs",
     "& node scripts/validate-resource-scenarios.mjs",
     "& node scripts/validate-resource-transitions.mjs",
     "& node scripts/validate-scenario-suites.mjs",
@@ -49,7 +55,7 @@ test("eng verify surface remains offline and bounded", () => {
     "& node src/cli.mjs run-scenario fixtures/runs/nominal-resource-run.v1.json --json",
     "& node src/cli.mjs run-scenario fixtures/runs/energy-deficit.v1.json --json",
     "& node src/cli.mjs run-suite fixtures/suites/core-resource-regression.v1.json --json",
-    "& node src/cli.mjs run-suite fixtures/suites/constraint-regression.v1.json --json",
+    "& node src/cli.mjs run-suite fixtures/suites/constraint-regression.v1.json --json"
   ]);
   assert.match(eng, /node src\/cli\.mjs run-suite fixtures\/suites\/invalid\/expectation-mismatch\.v1\.json --json|node src\\cli\.mjs run-suite fixtures\/suites\/invalid\/expectation-mismatch\.v1\.json --json/);
   assert.doesNotMatch(
@@ -78,17 +84,26 @@ test("preserved legacy branch resolves to the documented baseline", () => {
   assert.equal(head, baselineSha);
 });
 
-test("roadmap contains all incubation gates", () => {
-  const roadmap = fs.readFileSync("docs/roadmap.md", "utf8");
-  for (const gate of [
-    "I0 - Audit/Re-charter",
-    "I1 - Deterministic Simulation Kernel",
-    "I2 - Workload/Scheduler",
-    "I3 - Explainability/Telemetry",
-    "I4 - Optional Local AI Advisor Evaluation",
-    "I5 - Incubation Demonstrator",
-    "1.0 Decision Gate"
+test("active docs are consolidated and obsolete planning docs are absent", () => {
+  for (const file of [
+    "docs/product-charter.md",
+    "docs/verification-plan.md",
+    "docs/incubation/i0.5-measurements.md",
+    "docs/incubation/i0.5-harness-friction.md",
+    "scripts/validate-incubation-charter.mjs",
+    "scripts/validate-clean-skeleton.mjs",
+    "tests/incubation-charter.test.mjs"
   ]) {
-    assert.ok(roadmap.includes(gate));
+    assert.equal(fs.existsSync(file), false, `${file} should be absent`);
   }
+  assert.equal(fs.existsSync("docs/incubation/evaluations"), false);
+  assert.equal(fs.existsSync("docs/operational-pilot.md"), true);
+  assert.equal(fs.existsSync("docs/history/harness-evaluations.md"), true);
+});
+
+test("roadmap remains product-capability only", () => {
+  const roadmap = read("docs/roadmap.md");
+  assert.match(roadmap, /Status: `controlled_test_range`/);
+  assert.match(roadmap, /R3 - Next Meaningful Product Increment/);
+  assert.doesNotMatch(roadmap, /OP-1|OP-2|OP-3|OP-4/);
 });

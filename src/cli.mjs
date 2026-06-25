@@ -21,7 +21,7 @@ function writeHelp() {
       "Orbital Compute Lab",
       "",
       "Commands:",
-      "  status                         Print deterministic incubation status.",
+      "  status                         Print deterministic operational-pilot status.",
       "  status --json                  Print the status object as JSON.",
       "  validate-scenario <path>       Validate a resource-scenario.v1 file.",
       "  validate-scenario <path> --json Print validation as deterministic JSON.",

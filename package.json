@@ -9,8 +9,8 @@
   "scripts": {
     "status": "node src/cli.mjs status",
     "test": "node --test",
-    "validate:charter": "node scripts/validate-incubation-charter.mjs",
-    "validate:skeleton": "node scripts/validate-clean-skeleton.mjs",
-    "verify": "node scripts/validate-clean-skeleton.mjs"
+    "validate:pilot": "node scripts/validate-operational-pilot.mjs",
+    "validate:active-tree": "node scripts/validate-active-tree-boundaries.mjs",
+    "verify": "node scripts/validate-active-tree-boundaries.mjs"
   }
 }

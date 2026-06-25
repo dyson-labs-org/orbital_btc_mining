@@ -4,7 +4,7 @@
 validated `resource-scenario.v1` environment timeline through a small resource
 accounting engine.
 
-The format is an incubation contract. It is not validated spacecraft
+The format is a repository-local operational-pilot contract. It is not validated spacecraft
 thermodynamics, not workload scheduling, and not an operational simulation
 kernel.
 

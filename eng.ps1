@@ -36,8 +36,8 @@ function New-Summary {
     [ordered]@{
         command = $CommandName
         verification_status = if (@($Checks | Where-Object { $_.status -eq "failed" }).Count -eq 0) { "passed" } else { "failed" }
-        charter_status = "incubation"
-        skeleton_status = "skeleton"
+        pilot_status = "operational_pilot"
+        active_tree_status = "controlled_test_range"
         test_count = $TestCount
         legacy_source_status = "preserved_not_executed"
         dependency_installation = "not_required"
@@ -163,13 +163,13 @@ try {
             }
             if ($checks[-1].status -eq "failed") { ConvertTo-StatusJson (New-Summary -CommandName "verify" -Checks $checks); exit $checks[-1].exit_code }
 
-            $checks += Invoke-Check -Name "node scripts/validate-incubation-charter.mjs" -Action {
-                & node scripts/validate-incubation-charter.mjs
+            $checks += Invoke-Check -Name "node scripts/validate-operational-pilot.mjs" -Action {
+                & node scripts/validate-operational-pilot.mjs
             }
             if ($checks[-1].status -eq "failed") { ConvertTo-StatusJson (New-Summary -CommandName "verify" -Checks $checks); exit $checks[-1].exit_code }
 
-            $checks += Invoke-Check -Name "node scripts/validate-clean-skeleton.mjs" -Action {
-                & node scripts/validate-clean-skeleton.mjs
+            $checks += Invoke-Check -Name "node scripts/validate-active-tree-boundaries.mjs" -Action {
+                & node scripts/validate-active-tree-boundaries.mjs
             }
             if ($checks[-1].status -eq "failed") { ConvertTo-StatusJson (New-Summary -CommandName "verify" -Checks $checks); exit $checks[-1].exit_code }
 
@@ -207,7 +207,7 @@ try {
                 try {
                     $status = ($cliCheck.output -join "`n") | ConvertFrom-Json
                     if ($status.product_name -ne "Orbital Compute Lab" -or
-                        $status.implementation_status -ne "skeleton" -or
+                        $status.implementation_status -ne "controlled_test_range" -or
                         $status.capabilities.resource_scenario_contract -ne $true -or
                         $status.capabilities.resource_scenario_validation -ne $true -or
                         $status.capabilities.deterministic_resource_transition -ne $true -or
@@ -219,7 +219,7 @@ try {
                         $status.capabilities.ai_workload_model -ne $false) {
                         $cliCheck.status = "failed"
                         $cliCheck.exit_code = 1
-                        $cliCheck.output += "CLI status JSON overstates or mismatches I1B capabilities."
+                        $cliCheck.output += "CLI status JSON overstates or mismatches operational-pilot capabilities."
                     }
                 } catch {
                     $cliCheck.status = "failed"
@@ -414,7 +414,7 @@ try {
         "help" {
             "Usage: .\eng.ps1 bootstrap | verify | help"
             "bootstrap: checks Git, PowerShell, Node.js 22+, and legacy-source documentation without installing dependencies or creating artifacts."
-            "verify: runs bootstrap, git diff --check, charter validation, clean-skeleton validation, resource-scenario validation, resource-transition validation, node --test, status CLI, representative scenario CLI checks, and representative transition CLI checks."
+            "verify: runs bootstrap, git diff --check, operational-pilot validation, active-tree boundary validation, resource-scenario validation, resource-transition validation, node --test, status CLI, representative scenario CLI checks, and representative transition CLI checks."
             "No simulation kernel, scheduler, Bitcoin, AI, wallet, trading, network, hardware, or mission-authority behavior is verified or implemented."
             exit 0
         }

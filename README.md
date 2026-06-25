@@ -1,37 +1,33 @@
 # Orbital Compute Lab
 
-Orbital Compute Lab is an incubation repository for offline, deterministic
-study of constrained orbital resource allocation concepts.
+Orbital Compute Lab is the operational pilot and controlled test range for the provider-neutral Agent Engineering Harness. The active tree remains local, deterministic, and non-production while the pilot exercises task contracts, repository-owned verification, sanitized evidence, independent review, and rollback.
 
-Status: incubation skeleton with deterministic resource-scenario validation,
-resource transitions, and scenario-suite regression orchestration.
+Status: operational pilot activation with deterministic resource-scenario validation, resource transitions, and scenario-suite regression orchestration.
 
-The active product tree contains only dependency-free Node.js product metadata,
-an honest status CLI, a resource-scenario contract validator, a deterministic
-resource-transition engine, a scenario-suite runner, tests, and documentation.
-It does not implement a
-simulation kernel, scheduler, Bitcoin
-workload, AI workload, wallet, trading behavior, hosted AI behavior, network
-behavior, hardware control, or mission authority.
+Product stage: controlled test range.
 
-## Current Status
+Dependency installation: not required.
 
-- Incubation stage: I1C Deterministic Scenario Suites.
-- Product implementation: skeleton.
-- Harness evaluation cycle 1: `pass_with_findings`, merged.
-- Harness evaluation cycle 2: `pass_with_findings`, merged.
-- Harness evaluation cycle 3: `fail`; product vessel verification passed, but
-  harness remediation gates for path hygiene and required supplement omission
-  failed.
-- Resource-scenario contract: implemented for deterministic input validation.
-- Resource-transition engine: implemented for deterministic local resource accounting.
-- Scenario-suite runner: implemented for deterministic regression orchestration.
-- Legacy source: removed from active main and preserved on
-  `legacy/pre-orbital-compute-lab`.
-- Preserved legacy SHA: `c93c7366edcd86b83896c3c39b753805183c3126`.
-- Dependency installation: not required.
-- External service calls during verification: none.
-- I1 deterministic simulation kernel: not started.
+External service calls during verification: none.
+
+The active product tree contains dependency-free Node.js product metadata, an honest status CLI, resource-scenario validation, a deterministic resource-transition engine, a scenario-suite runner, tests, and documentation. It does not implement a simulation kernel, scheduler, Bitcoin workload, AI workload, wallet, trading behavior, hosted AI behavior, network behavior, hardware control, production deployment, or mission authority.
+
+## Golden Commands
+
+```powershell
+.\eng.ps1 bootstrap
+.\eng.ps1 verify
+node scripts/validate-operational-pilot.mjs
+node scripts/validate-active-tree-boundaries.mjs
+node --test
+node src/cli.mjs status
+node src/cli.mjs status --json
+node src/cli.mjs run-suite fixtures/suites/core-resource-regression.v1.json --json
+node src/cli.mjs run-suite fixtures/suites/constraint-regression.v1.json --json
+git diff --check
+```
+
+No package installation, legacy app command, server, live service probe, wallet, mining, payment, provider, adapter, or hosted model command is required for local verification.
 
 ## Status CLI
 
@@ -47,76 +43,21 @@ node src/cli.mjs run-suite fixtures/suites/constraint-regression.v1.json --json
 node src/cli.mjs help
 ```
 
-The CLI output is deterministic. It reports only the resource-scenario contract,
-validation, deterministic transition, and scenario-suite capabilities as
-implemented; simulation,
-scheduler, Bitcoin, AI,
-wallet, trading, network, hardware, and mission-authority capabilities remain
-false.
+The CLI output is deterministic. It reports only the resource-scenario contract, validation, deterministic transition, and scenario-suite capabilities as implemented; simulation, scheduler, Bitcoin, AI, wallet, trading, network, hardware, and mission-authority capabilities remain false.
 
-## Verification
+## Canonical Documents
 
-Use the canonical wrapper:
-
-```powershell
-.\eng.ps1 bootstrap
-.\eng.ps1 verify
-```
-
-`bootstrap` checks Git, PowerShell, Node.js 22 or newer, and legacy-source
-documentation. `verify` runs only:
-
-- `git diff --check`
-- `node scripts/validate-incubation-charter.mjs`
-- `node scripts/validate-clean-skeleton.mjs`
-- `node scripts/validate-resource-scenarios.mjs`
-- `node scripts/validate-resource-transitions.mjs`
-- `node scripts/validate-scenario-suites.mjs`
-- `node --test`
-- `node src/cli.mjs status --json`
-- representative valid and invalid `validate-scenario` CLI checks
-- representative nominal, constraint, and invalid `run-scenario` CLI checks
-- representative valid, constraint-containing, and expected-mismatch
-  `run-suite` CLI checks
-
-No `npm install`, `npm ci`, `pnpm`, `npx`, package build, server, legacy app,
-or external service is required.
-
-## Legacy Source
-
-Legacy source is not copied into a new active directory. Inspect it read-only
-through Git when needed:
-
-```powershell
-git show legacy/pre-orbital-compute-lab:app.py
-```
-
-See [docs/legacy-source-access.md](docs/legacy-source-access.md).
-
-## Key Documents
-
-- [Product charter](docs/product-charter.md)
+- [Operational pilot](docs/operational-pilot.md)
+- [Product roadmap](docs/roadmap.md)
 - [Safety boundaries](docs/safety-boundaries.md)
+- [Harness evaluation history](docs/history/harness-evaluations.md)
 - [Legacy inventory](docs/legacy-inventory.md)
 - [Legacy removal manifest](docs/legacy-removal-manifest.md)
 - [Legacy source access](docs/legacy-source-access.md)
 - [Audit report](docs/audit-report.md)
 - [Research assumptions](docs/research-assumptions.md)
-- [Verification plan](docs/verification-plan.md)
-- [Roadmap](docs/roadmap.md)
 - [Resource scenario v1](docs/simulation/resource-scenario-v1.md)
 - [Resource transition v1](docs/simulation/resource-transition-v1.md)
 - [Scenario suite v1](docs/simulation/scenario-suite-v1.md)
-- [Harness evaluation cycle 1 results](docs/incubation/evaluations/cycle-1-results.md)
-- [Harness evaluation cycle 2 plan](docs/incubation/evaluations/cycle-2-plan.md)
-- [Harness evaluation cycle 2 results](docs/incubation/evaluations/cycle-2-results.md)
-- [Harness evaluation cycle 2 friction register](docs/incubation/evaluations/cycle-2-friction-register.md)
-- [Harness evaluation cycle 3 plan](docs/incubation/evaluations/cycle-3-plan.md)
-- [Harness evaluation cycle 3 results](docs/incubation/evaluations/cycle-3-results.md)
-- [Harness evaluation cycle 3 friction register](docs/incubation/evaluations/cycle-3-friction-register.md)
-- [ADR-0001: Re-charter as Orbital Compute Lab](docs/architecture/ADR-0001-recharter-as-orbital-compute-lab.md)
-- [ADR-0002: Deterministic offline-first](docs/architecture/ADR-0002-deterministic-offline-first.md)
-- [ADR-0003: Node standard-library skeleton](docs/architecture/ADR-0003-node-standard-library-skeleton.md)
-- [ADR-0004: Resource Scenario Contract](docs/architecture/ADR-0004-resource-scenario-contract.md)
-- [ADR-0005: Deterministic Resource Transitions](docs/architecture/ADR-0005-deterministic-resource-transitions.md)
-- [ADR-0006: Deterministic Scenario Suites](docs/architecture/ADR-0006-deterministic-scenario-suites.md)
+
+Legacy source remains removed from active main and preserved on `legacy/pre-orbital-compute-lab` at `c93c7366edcd86b83896c3c39b753805183c3126` for read-only inspection.

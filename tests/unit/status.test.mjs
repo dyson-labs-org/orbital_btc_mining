@@ -7,15 +7,15 @@ test("status metadata is deterministic and honest", () => {
   assert.equal(status.schema_version, "1.0");
   assert.equal(status.product_name, "Orbital Compute Lab");
   assert.equal(status.repository, "dyson-labs-org/orbital_btc_mining");
-  assert.equal(status.maturity, "incubation");
-  assert.equal(status.implementation_status, "skeleton");
+  assert.equal(status.maturity, "operational_pilot");
+  assert.equal(status.implementation_status, "controlled_test_range");
   assert.equal(status.version, "0.0.0");
   assert.equal(status.runtime.name, "node");
   assert.equal(status.runtime.minimum_version, "22");
   assert.equal(statusJson(), statusJson());
 });
 
-test("only resource and scenario-suite capabilities are true in I1C", () => {
+test("only resource and scenario-suite capabilities are true", () => {
   const capabilities = getStatus().capabilities;
   for (const [name, value] of Object.entries(capabilities)) {
     const expected = [
