@@ -11,6 +11,7 @@
     "test": "node --test",
     "validate:pilot": "node scripts/validate-operational-pilot.mjs",
     "validate:active-tree": "node scripts/validate-active-tree-boundaries.mjs",
+    "validate:status": "node scripts/validate-operational-status.mjs",
     "verify": "node scripts/validate-active-tree-boundaries.mjs"
   }
 }

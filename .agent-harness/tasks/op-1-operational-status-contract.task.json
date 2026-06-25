@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0",
+  "task_id": "op-1-operational-status-contract",
+  "title": "OP-1 Operational Status Contract And Honesty Gate",
+  "repository": "dyson-labs-org/orbital_btc_mining",
+  "base_commit": "5e38748146ffdc53336581d28099c03b2661da76",
+  "harness_source": "634a4eb15d18b25d5b4dfa63c6bb602ea75ad720",
+  "affected_product_surfaces": [
+    "src/status.mjs",
+    "src/domain/operational-status.mjs",
+    "src/index.mjs",
+    "scripts/validate-operational-status.mjs",
+    "eng.ps1",
+    "node src/cli.mjs status --json"
+  ],
+  "acceptance_criteria": [
+    "status --json has the named strict operational-status.v1 contract",
+    "unknown status fields fail validation",
+    "missing status fields fail validation",
+    "wrong status field types fail validation",
+    "dishonest capability values fail validation",
+    "CLI and in-process status objects agree",
+    "repeated CLI status output is byte-identical",
+    "canonical verification executes the operational-status validator",
+    "the OP-1 checkpoint does not expand the implemented capability set",
+    "resource_trace_summary remains false at the OP-1 checkpoint",
+    "no external effect occurs",
+    "evidence is bound to the exact OP-1 checkpoint commit",
+    "no milestone-summary document is added"
+  ],
+  "required_verification": [
+    "node scripts/validate-operational-status.mjs",
+    "node --test",
+    "pwsh -NoProfile -File .\\eng.ps1 verify",
+    "git diff --check"
+  ],
+  "non_goals": [
+    "OP-2 resource trace summary implementation",
+    "simulation kernel",
+    "scheduler",
+    "Bitcoin workload",
+    "AI workload",
+    "wallet",
+    "external network behavior",
+    "provider or adapter activation",
+    "package release"
+  ],
+  "external_side_effect_boundaries": [
+    "no credentials or secrets",
+    "no live providers or adapters",
+    "no external services",
+    "no production deployment",
+    "no wallet, payment, or real mining behavior",
+    "no canonical KB writes",
+    "no mutation of legacy/pre-orbital-compute-lab"
+  ],
+  "rollback_method": "Revert the OP-1 commit range from the pilot branch and rerun pwsh -NoProfile -File .\\eng.ps1 verify.",
+  "evidence_expectations": [
+    "baseline evidence under .agent-harness/artifacts/op-1-op-2/",
+    "OP-1 checkpoint evidence under .agent-harness/artifacts/op-1-op-2/op-1-checkpoint/",
+    "installed-harness evidence generated from harness 634a4eb15d18b25d5b4dfa63c6bb602ea75ad720",
+    "terminal scan raw-root, encoded-root, sentinel, and scanner-error counts are zero"
+  ],
+  "c3_harness_004_disposition": "open / accepted_for_offline_v0.2; not fixed, passed, or closed by OP-1",
+  "op_2_scope": "OP-2 is not part of the OP-1 checkpoint."
+}

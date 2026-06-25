@@ -11,6 +11,7 @@ test("status --json emits only deterministic status JSON", () => {
   });
   assert.equal(first, second);
   const parsed = JSON.parse(first);
+  assert.equal(parsed.schema_version, "operational-status.v1");
   assert.equal(parsed.product_name, "Orbital Compute Lab");
   assert.equal(parsed.maturity, "operational_pilot");
   assert.equal(parsed.implementation_status, "controlled_test_range");
@@ -19,6 +20,7 @@ test("status --json emits only deterministic status JSON", () => {
   assert.equal(parsed.capabilities.deterministic_resource_transition, true);
   assert.equal(parsed.capabilities.scenario_suite_contract, true);
   assert.equal(parsed.capabilities.scenario_suite_runner, true);
+  assert.equal(parsed.capabilities.resource_trace_summary, false);
   assert.equal(parsed.capabilities.simulation_kernel, false);
   assert.equal(parsed.capabilities.workload_scheduler, false);
 });

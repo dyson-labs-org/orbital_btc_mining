@@ -15,7 +15,9 @@ const requiredFiles = [
   "src/domain/resource-scenario.mjs",
   "src/domain/resource-transition.mjs",
   "src/domain/scenario-suite.mjs",
+  "src/domain/operational-status.mjs",
   "tests/unit/status.test.mjs",
+  "tests/unit/operational-status.test.mjs",
   "tests/unit/cli.test.mjs",
   "tests/unit/package-boundary.test.mjs",
   "tests/unit/resource-scenario.test.mjs",
@@ -38,7 +40,9 @@ const requiredFiles = [
   "docs/simulation/resource-scenario-v1.md",
   "docs/simulation/resource-transition-v1.md",
   "docs/simulation/scenario-suite-v1.md",
-  "scripts/validate-scenario-suites.mjs"
+  "docs/contracts/operational-status-v1.md",
+  "scripts/validate-scenario-suites.mjs",
+  "scripts/validate-operational-status.mjs"
 ];
 
 const forbiddenActivePaths = [
@@ -257,6 +261,7 @@ if (status) {
     failures.push("status runtime minimum version must be 22");
   }
   const requiredFalseCapabilities = [
+    "resource_trace_summary",
     "simulation_kernel",
     "orbital_resource_model",
     "bitcoin_workload_model",

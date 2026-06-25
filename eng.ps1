@@ -62,6 +62,7 @@ function New-Summary {
         expected_domain_constraints = Get-CheckStatus -Checks $Checks -Name "constraint scenario suite run"
         expected_suite_mismatch_failure = Get-CheckStatus -Checks $Checks -Name "expected suite mismatch run"
         deterministic_suite_json = Get-CheckStatus -Checks $Checks -Name "deterministic suite JSON comparison"
+        operational_status_contract = Get-CheckStatus -Checks $Checks -Name "node scripts/validate-operational-status.mjs"
         capability_validation = Get-CheckStatus -Checks $Checks -Name "node src/cli.mjs status --json"
         checks = $Checks
     }
@@ -170,6 +171,11 @@ try {
 
             $checks += Invoke-Check -Name "node scripts/validate-active-tree-boundaries.mjs" -Action {
                 & node scripts/validate-active-tree-boundaries.mjs
+            }
+            if ($checks[-1].status -eq "failed") { ConvertTo-StatusJson (New-Summary -CommandName "verify" -Checks $checks); exit $checks[-1].exit_code }
+
+            $checks += Invoke-Check -Name "node scripts/validate-operational-status.mjs" -Action {
+                & node scripts/validate-operational-status.mjs
             }
             if ($checks[-1].status -eq "failed") { ConvertTo-StatusJson (New-Summary -CommandName "verify" -Checks $checks); exit $checks[-1].exit_code }
 
@@ -414,7 +420,7 @@ try {
         "help" {
             "Usage: .\eng.ps1 bootstrap | verify | help"
             "bootstrap: checks Git, PowerShell, Node.js 22+, and legacy-source documentation without installing dependencies or creating artifacts."
-            "verify: runs bootstrap, git diff --check, operational-pilot validation, active-tree boundary validation, resource-scenario validation, resource-transition validation, node --test, status CLI, representative scenario CLI checks, and representative transition CLI checks."
+            "verify: runs bootstrap, git diff --check, operational-pilot validation, active-tree boundary validation, operational-status validation, resource-scenario validation, resource-transition validation, node --test, status CLI, representative scenario CLI checks, and representative transition CLI checks."
             "No simulation kernel, scheduler, Bitcoin, AI, wallet, trading, network, hardware, or mission-authority behavior is verified or implemented."
             exit 0
         }

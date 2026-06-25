@@ -4,7 +4,7 @@ import { getStatus, statusJson } from "../../src/index.mjs";
 
 test("status metadata is deterministic and honest", () => {
   const status = getStatus();
-  assert.equal(status.schema_version, "1.0");
+  assert.equal(status.schema_version, "operational-status.v1");
   assert.equal(status.product_name, "Orbital Compute Lab");
   assert.equal(status.repository, "dyson-labs-org/orbital_btc_mining");
   assert.equal(status.maturity, "operational_pilot");

@@ -1,37 +1,21 @@
+import {
+  OPERATIONAL_STATUS_CONSTANTS,
+  OPERATIONAL_STATUS_SCHEMA_VERSION,
+  operationalStatusCapabilityMatrix
+} from "./domain/operational-status.mjs";
+
 export const productStatus = Object.freeze({
-  schema_version: "1.0",
-  product_name: "Orbital Compute Lab",
-  repository: "dyson-labs-org/orbital_btc_mining",
-  maturity: "operational_pilot",
-  implementation_status: "controlled_test_range",
-  runtime: {
-    name: "node",
-    minimum_version: "22"
-  },
+  schema_version: OPERATIONAL_STATUS_SCHEMA_VERSION,
+  product_name: OPERATIONAL_STATUS_CONSTANTS.product_name,
+  repository: OPERATIONAL_STATUS_CONSTANTS.repository,
+  maturity: OPERATIONAL_STATUS_CONSTANTS.maturity,
+  implementation_status: OPERATIONAL_STATUS_CONSTANTS.implementation_status,
+  runtime: Object.freeze({
+    name: OPERATIONAL_STATUS_CONSTANTS.runtime.name,
+    minimum_version: OPERATIONAL_STATUS_CONSTANTS.runtime.minimum_version
+  }),
   version: "0.0.0",
-  capabilities: Object.freeze({
-    resource_scenario_contract: true,
-    resource_scenario_validation: true,
-    deterministic_resource_transition: true,
-    scenario_suite_contract: true,
-    scenario_suite_runner: true,
-    simulation_kernel: false,
-    orbital_resource_model: false,
-    workload_scheduler: false,
-    bitcoin_workload_model: false,
-    ai_workload_model: false,
-    profitability_model: false,
-    scheduler: false,
-    telemetry: false,
-    anomaly_detection: false,
-    live_bitcoin: false,
-    wallet: false,
-    trading: false,
-    hosted_ai: false,
-    external_network: false,
-    hardware_control: false,
-    mission_authority: false
-  })
+  capabilities: operationalStatusCapabilityMatrix()
 });
 
 export function getStatus() {

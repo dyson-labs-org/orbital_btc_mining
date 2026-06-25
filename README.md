@@ -19,6 +19,7 @@ The active product tree contains dependency-free Node.js product metadata, an ho
 .\eng.ps1 verify
 node scripts/validate-operational-pilot.mjs
 node scripts/validate-active-tree-boundaries.mjs
+node scripts/validate-operational-status.mjs
 node --test
 node src/cli.mjs status
 node src/cli.mjs status --json
@@ -59,5 +60,6 @@ The CLI output is deterministic. It reports only the resource-scenario contract,
 - [Resource scenario v1](docs/simulation/resource-scenario-v1.md)
 - [Resource transition v1](docs/simulation/resource-transition-v1.md)
 - [Scenario suite v1](docs/simulation/scenario-suite-v1.md)
+- [Operational status v1](docs/contracts/operational-status-v1.md)
 
 Legacy source remains removed from active main and preserved on `legacy/pre-orbital-compute-lab` at `c93c7366edcd86b83896c3c39b753805183c3126` for read-only inspection.
