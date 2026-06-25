@@ -1,6 +1,6 @@
 # Roadmap
 
-Orbital Compute Lab is a controlled test range for deterministic, offline resource-accounting product work. This roadmap tracks product capability only; the pilot charter lives in [docs/operational-pilot.md](operational-pilot.md).
+Orbital Compute Lab is a controlled test range for deterministic, offline resource-accounting product work. This roadmap tracks product capability only; the pilot charter lives in [docs/operational-pilot.md](operational-pilot.md), and harness-side pilot/release-gate status remains authoritative in `agent-engineering-harness/docs/pilots/orbital.md`.
 
 ## Current Product Stage
 
@@ -13,7 +13,8 @@ Implemented capabilities:
 - `scenario-suite.v1` regression orchestration;
 - `resource-trace-summary.v1` deterministic trace summaries;
 - deterministic status and CLI output;
-- dependency-free local verification.
+- dependency-free local verification;
+- dependency-free controlled failure-recovery rehearsal for ignored repository-local state.
 
 Not implemented: simulation kernel, workload scheduler, profitability model, Bitcoin workload, AI workload, wallet, trading, telemetry, external network behavior, hardware control, production deployment, and mission authority.
 
@@ -47,9 +48,11 @@ Exit gate: committed deterministic summary fixtures, `.\eng.ps1 verify`, and rev
 
 ### R4 - Deterministic Failure-State Scenarios
 
-Status: planned
+Status: ready_for_independent_review
 
-Outcome: add local fixtures that model recoverable resource deficits, constraint failures, and state reconciliation without external effects.
+Outcome: add a deterministic recovery rehearsal that introduces a fixed suite expectation failure only under ignored repository-local state, observes the real nonzero child-process result, diagnoses the expected failure codes, rolls the disposable state back byte-for-byte, reruns successfully, and proves existing status, scenario, suite, and summary outputs remain unchanged.
+
+Exit gate: committed recovery plan fixture, focused tests, canonical `.\eng.ps1 verify`, commit-bound evidence, and independent review. This remains a verification surface, not a public product CLI capability.
 
 ### R5 - Product Direction Decision
 

@@ -1,0 +1,124 @@
+{
+  "schema_version": "op-3-failure-recovery-plan.v1",
+  "plan_id": "op-3-failure-recovery",
+  "roadmap_mapping": "R4 - Deterministic Failure-State Scenarios",
+  "orbital_base_commit": "b8d0029d83537991c3a6f81f32c1d6458c2e4bcd",
+  "harness_source_commit": "011880bfe915f0224f1eccd8bfa9a5ba57a68e36",
+  "clean_main_baseline": {
+    "verification_status": "passed",
+    "test_count": 120,
+    "failures": [],
+    "skipped_checks": [],
+    "not_run_checks": []
+  },
+  "disposable_state_root": ".agent-harness/tmp/op-3-failure-recovery/",
+  "ignored_evidence_root": ".agent-harness/artifacts/op-3-failure-recovery/",
+  "source_suite": "fixtures/suites/core-resource-regression.v1.json",
+  "workspace_suite": ".agent-harness/tmp/op-3-failure-recovery/workspace/core-resource-regression.v1.json",
+  "controlled_failure": {
+    "case_id": "nominal-resource-run",
+    "phase": "suite_expectation_check",
+    "expected_child_exit_code": 1,
+    "expected_outcome": "constraint_violation",
+    "expected_constraint_codes": [
+      "ENERGY_DEFICIT"
+    ],
+    "expected_failure_codes": [
+      "outcome_mismatch",
+      "constraint_codes_mismatch"
+    ],
+    "classification": "pilot_introduced"
+  },
+  "regression_hashes": [
+    {
+      "id": "status_json",
+      "argv": [
+        "src/cli.mjs",
+        "status",
+        "--json"
+      ],
+      "stdout_sha256": "dd2b21b60ea7fe734ed54e50fb7ac0e0079db52a14842cf1a4ab0a48432db106",
+      "stdout_bytes": 1053
+    },
+    {
+      "id": "run_nominal_resource",
+      "argv": [
+        "src/cli.mjs",
+        "run-scenario",
+        "fixtures/runs/nominal-resource-run.v1.json",
+        "--json"
+      ],
+      "stdout_sha256": "da9328d1d0514da0475347bae7612e49f98e0fb12f309b1145e9f242cdfa64ac",
+      "stdout_bytes": 1893
+    },
+    {
+      "id": "run_energy_deficit",
+      "argv": [
+        "src/cli.mjs",
+        "run-scenario",
+        "fixtures/runs/energy-deficit.v1.json",
+        "--json"
+      ],
+      "stdout_sha256": "f6fba555d89809f131e3fb9393344cf6c721924592fd848195caf3905c5a443c",
+      "stdout_bytes": 1487
+    },
+    {
+      "id": "summarize_nominal_resource",
+      "argv": [
+        "src/cli.mjs",
+        "summarize-scenario",
+        "fixtures/runs/nominal-resource-run.v1.json",
+        "--json"
+      ],
+      "stdout_sha256": "014fa68e851d9712403c758e4898203aed676bc320838dc002cbf116b80e9aa4",
+      "stdout_bytes": 1040
+    },
+    {
+      "id": "summarize_energy_deficit",
+      "argv": [
+        "src/cli.mjs",
+        "summarize-scenario",
+        "fixtures/runs/energy-deficit.v1.json",
+        "--json"
+      ],
+      "stdout_sha256": "531a97f54794795cb41ba3b72049e755248e40ef2fbf8b117442421b70fa5604",
+      "stdout_bytes": 1153
+    },
+    {
+      "id": "suite_core_resource_regression",
+      "argv": [
+        "src/cli.mjs",
+        "run-suite",
+        "fixtures/suites/core-resource-regression.v1.json",
+        "--json"
+      ],
+      "stdout_sha256": "6397712169cead2b6dd081e92eb59830e100ef2c0dc5ce065425492171d2ac23",
+      "stdout_bytes": 912
+    },
+    {
+      "id": "suite_constraint_regression",
+      "argv": [
+        "src/cli.mjs",
+        "run-suite",
+        "fixtures/suites/constraint-regression.v1.json",
+        "--json"
+      ],
+      "stdout_sha256": "b0fd3cfd0e5b8af4b451b31478d1bbb7958e7093e42f04da3e4a0d97d669198d",
+      "stdout_bytes": 1573
+    }
+  ],
+  "non_goals": [
+    "simulation",
+    "scheduler",
+    "telemetry",
+    "Bitcoin",
+    "AI",
+    "wallet",
+    "payment",
+    "profitability",
+    "hardware control",
+    "provider integration",
+    "external network behavior"
+  ],
+  "external_effects": "none"
+}

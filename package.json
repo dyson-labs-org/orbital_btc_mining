@@ -13,6 +13,7 @@
     "validate:active-tree": "node scripts/validate-active-tree-boundaries.mjs",
     "validate:status": "node scripts/validate-operational-status.mjs",
     "validate:trace-summary": "node scripts/validate-resource-trace-summaries.mjs",
+    "validate:op-3": "node scripts/validate-op-3-failure-recovery.mjs",
     "verify": "node scripts/validate-active-tree-boundaries.mjs"
   }
 }

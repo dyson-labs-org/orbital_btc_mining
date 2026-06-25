@@ -51,6 +51,7 @@ test("eng verify surface remains offline and bounded", () => {
     "& node scripts/validate-resource-transitions.mjs",
     "& node scripts/validate-resource-trace-summaries.mjs",
     "& node scripts/validate-scenario-suites.mjs",
+    "& node scripts/validate-op-3-failure-recovery.mjs",
     "& node --test",
     "& node src/cli.mjs status --json",
     "& node src/cli.mjs validate-scenario fixtures/scenarios/minimal-sunlit.v1.json --json",

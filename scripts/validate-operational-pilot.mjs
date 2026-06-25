@@ -14,6 +14,7 @@ const requiredFiles = [
   ".agent-harness/README.md",
   ".agent-harness/tasks/op-1-operational-status-contract.task.json",
   ".agent-harness/tasks/op-2-resource-trace-summary.task.json",
+  ".agent-harness/tasks/op-3-failure-recovery.task.json",
   "docs/operational-pilot.md",
   "docs/safety-boundaries.md",
   "docs/legacy-inventory.md",
@@ -32,13 +33,16 @@ const requiredFiles = [
   "scripts/validate-active-tree-boundaries.mjs",
   "scripts/validate-operational-status.mjs",
   "scripts/validate-resource-trace-summaries.mjs",
+  "scripts/validate-op-3-failure-recovery.mjs",
   "tests/operational-pilot.test.mjs",
+  "tests/op-3-failure-recovery.test.mjs",
   "tests/unit/operational-status.test.mjs",
   "tests/unit/resource-trace-summary.test.mjs",
   "tests/unit/resource-trace-summary-cli.test.mjs",
   "fixtures/summaries/nominal-resource-run-summary.v1.json",
   "fixtures/summaries/energy-deficit-summary.v1.json",
-  "fixtures/summaries/combined-constraints-summary.v1.json"
+  "fixtures/summaries/combined-constraints-summary.v1.json",
+  "fixtures/recovery/op-3-failure-recovery-plan.v1.json"
 ];
 
 const removedActivePaths = [
@@ -70,6 +74,7 @@ const requiredText = {
     "External service calls during verification",
     "node scripts/validate-operational-status.mjs",
     "node scripts/validate-resource-trace-summaries.mjs",
+    "node scripts/validate-op-3-failure-recovery.mjs",
     "Operational status v1"
   ],
   "AGENTS.md": [
@@ -79,9 +84,10 @@ const requiredText = {
   ],
   "docs/operational-pilot.md": [
     "Classification: `operational_pilot`",
-    "Current milestone: `OP-0`",
+    "Current milestone: `OP-3`",
+    "Status: `op_3_ready_for_independent_review`",
     "C3-HARNESS-004 status: `open / accepted_for_offline_v0.2`",
-    "No `.agent-harness/project.json` is required for OP-0",
+    "No `.agent-harness/project.json` is required",
     "No consumed schema exists"
   ],
   "docs/safety-boundaries.md": [
@@ -92,6 +98,8 @@ const requiredText = {
   "docs/roadmap.md": [
     "Status: `controlled_test_range`",
     "R3 - Next Meaningful Product Increment",
+    "R4 - Deterministic Failure-State Scenarios",
+    "Status: ready_for_independent_review",
     "Product capability claims require committed implementation"
   ],
   "docs/history/harness-evaluations.md": [
@@ -101,9 +109,10 @@ const requiredText = {
     "C3-HARNESS-004 remains `open / accepted_for_offline_v0.2`"
   ],
   ".agent-harness/README.md": [
-    "OP-0 intentionally does not include `.agent-harness/project.json`",
+    "OP-3 failure recovery",
     "No consumed harness schema exists",
-    "node scripts/validate-operational-pilot.mjs"
+    "node scripts/validate-operational-pilot.mjs",
+    "node scripts/validate-op-3-failure-recovery.mjs"
   ]
 };
 
@@ -166,6 +175,7 @@ const allowedEngInvocations = new Set([
   "& node scripts/validate-resource-transitions.mjs",
   "& node scripts/validate-resource-trace-summaries.mjs",
   "& node scripts/validate-scenario-suites.mjs",
+  "& node scripts/validate-op-3-failure-recovery.mjs",
   "& node --test",
   "& node src/cli.mjs status --json",
   "& node src/cli.mjs validate-scenario fixtures/scenarios/minimal-sunlit.v1.json --json",
@@ -300,6 +310,36 @@ const preservedHead =
   gitRevParse(`refs/remotes/origin/${preservedBranch}`);
 if (preservedHead !== baselineSha) {
   failures.push(`preserved branch ${preservedBranch} must resolve to ${baselineSha}`);
+}
+if (exists(".agent-harness/tasks/op-3-failure-recovery.task.json")) {
+  try {
+    const task = JSON.parse(read(".agent-harness/tasks/op-3-failure-recovery.task.json"));
+    const requiredTaskValues = {
+      schema_version: "1.0",
+      task_id: "op-3-failure-recovery",
+      title: "OP-3 Controlled Failure Recovery And Rollback",
+      repository: "dyson-labs-org/orbital_btc_mining",
+      base_commit: "b8d0029d83537991c3a6f81f32c1d6458c2e4bcd",
+      harness_source: "011880bfe915f0224f1eccd8bfa9a5ba57a68e36",
+      c3_harness_004_disposition: "open / accepted_for_offline_v0.2; not fixed, passed, or closed by OP-3"
+    };
+    for (const [field, expected] of Object.entries(requiredTaskValues)) {
+      if (task[field] !== expected) {
+        failures.push(`OP-3 task contract ${field} mismatch`);
+      }
+    }
+    if (!Array.isArray(task.acceptance_criteria) || task.acceptance_criteria.length < 20) {
+      failures.push("OP-3 task contract must record detailed acceptance criteria");
+    }
+    if (!String(task.rollback_method ?? "").includes(".agent-harness/tmp/op-3-failure-recovery/") || !String(task.rollback_method ?? "").includes("revert the OP-3 commit range")) {
+      failures.push("OP-3 task contract rollback method must cover disposable state and branch revert rollback");
+    }
+    if (task.v0_2_status === "complete" || task.op_4_status === "complete") {
+      failures.push("OP-3 task contract must not complete v0.2 or OP-4");
+    }
+  } catch (error) {
+    failures.push(`OP-3 task contract JSON failed: ${error.message}`);
+  }
 }
 
 const summary = {
